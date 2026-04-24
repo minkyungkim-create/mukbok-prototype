@@ -44,7 +44,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;background:#FAF9
 .rc .share{position:absolute;top:16px;right:16px;width:32px;height:32px;background:rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer}
 .rc .nick{font-size:14px;opacity:.9;margin-bottom:2px}.rc .ttl{font-size:22px;font-weight:800;margin-bottom:18px}
 .bars{display:flex;flex-direction:column;gap:10px}
-.br{display:flex;align-items:center;gap:10px}.br .lb{font-size:13px;width:56px;flex-shrink:0;opacity:.9}
+.br{display:flex;align-items:center;gap:10px}.br .lb{font-size:11px;width:88px;flex-shrink:0;opacity:.9;white-space:nowrap}
 .br .bg{flex:1;height:8px;background:rgba(255,255,255,.25);border-radius:4px;overflow:hidden}
 .br .fl{height:100%;border-radius:4px;background:#fff;transition:width 1s}.br .pc{font-size:12px;width:36px;text-align:right;font-weight:700}
 /* 접힘 UX */
@@ -398,7 +398,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;background:#FAF9
 <div class="bars">
 <div class="br"><span class="lb">🌶️ 매콤한 맛</span><div class="bg"><div class="fl" style="width:82%"></div></div><span class="pc tag-hot">매콤한맛 끝판왕</span></div>
 <div class="br"><span class="lb">🍰 달달한맛</span><div class="bg"><div class="fl" style="width:34%"></div></div><span class="pc tag-low">단건 별로</span></div>
-<div class="br"><span class="lb">😋 감칠맛</span><div class="bg"><div class="fl" style="width:51%"></div></div><span class="pc tag-mid">적당히 즐겨</span></div>
+<div class="br"><span class="lb">😋 입맛돋구는 감칠맛</span><div class="bg"><div class="fl" style="width:51%"></div></div><span class="pc tag-mid">적당히 즐겨</span></div>
 </div></div>
 <div class="rv"><div class="rv-t">민경님의 먹을복 한줄평</div>
 <p>🌶️ 매콤한 게 당기면 참지 못하는 타입! 최근 12주간 매콤한 맛 주문 비율이 압도적이에요.</p>
@@ -425,7 +425,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;background:#FAF9
 <div style="padding:12px 16px 0;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none">
 <div class="ttb" onclick="switchTaste('spicy',this)" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #CC785C;background:#CC785C;cursor:pointer;white-space:nowrap;color:#fff;position:relative">🌶️ 매콤한 맛<span style="position:absolute;top:-6px;right:-4px;font-size:9px;background:#FF6B00;color:#fff;padding:1px 4px;border-radius:6px;font-weight:700">MY</span></div>
 <div class="ttb" onclick="switchTaste('sweet',this)" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #eee;background:#fff;cursor:pointer;white-space:nowrap;color:#888">🍰 달달한맛</div>
-<div class="ttb" onclick="switchTaste('umami',this)" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #eee;background:#fff;cursor:pointer;white-space:nowrap;color:#888">😋 감칠맛</div>
+<div class="ttb" onclick="switchTaste('umami',this)" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #eee;background:#fff;cursor:pointer;white-space:nowrap;color:#888">😋 입맛돋구는 감칠맛</div>
 </div>
 <!-- 매운맛 -->
 <div id="tp-spicy" class="tp" style="display:block">
