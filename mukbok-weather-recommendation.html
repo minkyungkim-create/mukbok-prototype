@@ -18,17 +18,17 @@
       --color-text-lightest: rgba(255,255,255,0.3);
 
       --color-bg-primary: #fff;
-      --color-bg-light: #f5f5f5;
-      --color-bg-lighter: #f9f9f9;
-      --color-bg-border: #f0f0f0;
-      --color-bg-image: #F9FAFB;
+      --color-bg-light: #FAF7F2;
+      --color-bg-lighter: #FAF2EC;
+      --color-bg-border: #f0ebe4;
+      --color-bg-image: #FAF2EC;
       --color-bg-dark: #2C3E50;
       --color-border: #eee;
 
       /* Accent Colors */
-      --color-accent: #2AC1BC;
-      --color-accent-alt: #5B2EFF;
-      --color-accent-warm: #FF6B00;
+      --color-accent: #CC785C;
+      --color-accent-alt: #7C3AED;
+      --color-accent-warm: #CC785C;
       --color-accent-warm-alt: #FF8A3D;
 
       /* Typography */
@@ -81,7 +81,7 @@
 
     html, body {
       font-family: var(--font-family);
-      background: linear-gradient(135deg, #E8F8F6 0%, #FFF4E6 100%);
+      background: #FAF9F7;
       color: var(--color-text-primary);
       min-height: 100vh;
     }
@@ -135,12 +135,12 @@
     }
 
     .card--hero.card--warm {
-      background: var(--color-accent-warm);
+      background: linear-gradient(135deg, #CC785C, #B5614A);
     }
 
     .card--hero.card--light {
-      background: linear-gradient(135deg, #f8f8f8, #f0f0f0);
-      border: 2px solid var(--color-accent);
+      background: linear-gradient(135deg, #FAF2EC, #F5E6D8);
+      border: 2px solid #e8c9b6;
       color: var(--color-text-primary);
     }
 
@@ -383,10 +383,10 @@
 
     .tab-btn {
       padding: 10px var(--spacing-2xl);
-      border: 2px solid var(--color-text-primary);
+      border: 1.5px solid #ddd;
       border-radius: var(--radius-pill);
       background: var(--color-bg-primary);
-      color: var(--color-text-primary);
+      color: #888;
       font-size: var(--font-size-base);
       font-weight: var(--font-weight-bold);
       cursor: pointer;
@@ -396,8 +396,9 @@
     }
 
     .tab-btn.active {
-      background: var(--color-text-primary);
-      color: var(--color-bg-primary);
+      background: #CC785C;
+      border-color: #CC785C;
+      color: #fff;
     }
 
     .tab-btn:hover {
@@ -444,8 +445,8 @@
     }
 
     .carousel-icon.active {
-      border-color: var(--color-text-primary);
-      background: var(--color-bg-border);
+      border-color: #CC785C;
+      background: #FAF2EC;
     }
 
     .carousel-icon:hover {
@@ -805,10 +806,11 @@
     .shop-tab {
       padding: var(--spacing-sm) var(--spacing-xl);
       background: var(--color-bg-primary);
-      border: 2px solid var(--color-text-primary);
+      border: 1.5px solid #ddd;
       border-radius: var(--radius-pill);
       font-size: var(--font-size-sm);
       font-weight: var(--font-weight-bold);
+      color: #888;
       cursor: pointer;
       white-space: nowrap;
       flex-shrink: 0;
@@ -816,8 +818,9 @@
     }
 
     .shop-tab.active {
-      background: var(--color-text-primary);
-      color: var(--color-bg-primary);
+      background: #CC785C;
+      border-color: #CC785C;
+      color: #fff;
     }
 
     .shop-tab:hover {
