@@ -394,23 +394,22 @@ body{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;background:#FAF9
 <div class="rc-wrap" id="rc-wrap">
 <!-- 펼침 상태 -->
 <div class="rc-full" id="rc-full">
-<div class="rc"><div class="share">↗</div><div class="nick" style="font-size:14px;opacity:.9;margin-bottom:6px">민경님은</div><div class="ttl" style="font-size:19px;line-height:1.4">매운맛을 즐길 줄 아는<br>복을 타고났네요! 🔥</div>
+<div class="rc"><div class="share">↗</div><div class="nick" style="font-size:14px;opacity:.9;margin-bottom:6px">민경님은</div><div class="ttl" style="font-size:19px;line-height:1.4">매콤한 맛을 즐길 줄 아는<br>복을 타고났네요! 🔥</div>
 <div class="bars">
-<div class="br"><span class="lb">🌶️ 매운맛</span><div class="bg"><div class="fl" style="width:82%"></div></div><span class="pc tag-hot">매운맛 끝판왕</span></div>
-<div class="br"><span class="lb">🧂 짭짤한맛</span><div class="bg"><div class="fl" style="width:51%"></div></div><span class="pc tag-mid">적당히</span></div>
+<div class="br"><span class="lb">🌶️ 매콤한 맛</span><div class="bg"><div class="fl" style="width:82%"></div></div><span class="pc tag-hot">매콤한맛 끝판왕</span></div>
 <div class="br"><span class="lb">🍰 달달한맛</span><div class="bg"><div class="fl" style="width:34%"></div></div><span class="pc tag-low">단건 별로</span></div>
-<div class="br"><span class="lb">🥗 건강</span><div class="bg"><div class="fl" style="width:18%"></div></div><span class="pc tag-low">건강은 내일부터</span></div>
+<div class="br"><span class="lb">😋 감칠맛</span><div class="bg"><div class="fl" style="width:51%"></div></div><span class="pc tag-mid">적당히 즐겨</span></div>
 </div></div>
 <div class="rv"><div class="rv-t">민경님의 먹을복 한줄평</div>
-<p>🌶️ 매운 게 당기면 참지 못하는 타입! 최근 12주간 매운맛 주문 비율이 압도적이에요.</p>
-<p>🍜 특히 떡볶이·마라 계열을 자주 찾고, 야식 시간대에 매운맛 주문이 집중돼요.</p>
-<p>🔥 매운맛 내성이 높아 2단계 이상도 거뜬히 소화하는 먹을복의 소유자!</p></div>
+<p>🌶️ 매콤한 게 당기면 참지 못하는 타입! 최근 12주간 매콤한 맛 주문 비율이 압도적이에요.</p>
+<p>🍜 특히 떡볶이·마라 계열을 자주 찾고, 야식 시간대에 매콤한 맛 주문이 집중돼요.</p>
+<p>🔥 매콤한 맛 내성이 높아 2단계 이상도 거뜬히 소화하는 먹을복의 소유자!</p></div>
 <div class="rc-fold-btn" onclick="foldResult()">접기 ▲</div>
 </div>
 <!-- 접힌 상태 요약 바 -->
 <div class="rc-mini" id="rc-mini" style="display:none" onclick="unfoldResult()">
 <span class="rc-mini-icon">🍜</span>
-<span class="rc-mini-text">나의 먹을복: <b>매운맛을 즐길 줄 아는 복 🔥</b></span>
+<span class="rc-mini-text">나의 먹을복: <b>매콤한 맛을 즐길 줄 아는 복 🔥</b></span>
 <span class="rc-mini-arrow">∨ 펼치기</span>
 </div>
 
@@ -424,13 +423,13 @@ body{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;background:#FAF9
   <div style="width:40px;height:40px;background:#1a1a1a;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">⬇</div>
 </div>
 <div style="padding:12px 16px 0;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none">
-<div class="ttb" onclick="switchTaste('spicy',this)" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #CC785C;background:#CC785C;cursor:pointer;white-space:nowrap;color:#fff;position:relative">🌶️ 매운맛<span style="position:absolute;top:-6px;right:-4px;font-size:9px;background:#FF6B00;color:#fff;padding:1px 4px;border-radius:6px;font-weight:700">MY</span></div>
+<div class="ttb" onclick="switchTaste('spicy',this)" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #CC785C;background:#CC785C;cursor:pointer;white-space:nowrap;color:#fff;position:relative">🌶️ 매콤한 맛<span style="position:absolute;top:-6px;right:-4px;font-size:9px;background:#FF6B00;color:#fff;padding:1px 4px;border-radius:6px;font-weight:700">MY</span></div>
 <div class="ttb" onclick="switchTaste('sweet',this)" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #eee;background:#fff;cursor:pointer;white-space:nowrap;color:#888">🍰 달달한맛</div>
-<div class="ttb" onclick="switchTaste('umami',this)" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #eee;background:#fff;cursor:pointer;white-space:nowrap;color:#888">🍖 감칠맛</div>
+<div class="ttb" onclick="switchTaste('umami',this)" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #eee;background:#fff;cursor:pointer;white-space:nowrap;color:#888">😋 감칠맛</div>
 </div>
 <!-- 매운맛 -->
 <div id="tp-spicy" class="tp" style="display:block">
-<div style="padding:16px 16px 12px"><div style="font-size:16px;font-weight:700"><span style="color:#CC785C">매운맛</span> 좋아하는 당신을 위한 가게</div></div>
+<div style="padding:16px 16px 12px"><div style="font-size:16px;font-weight:700"><span style="color:#CC785C">매콤한 맛</span> 좋아하는 당신을 위한 가게</div></div>
 <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:8px">
 <div onclick="goToBrand('엽기떡볶이')" ontouchstart="this.style.background='#FAF7F2'" ontouchend="this.style.background='#fff'" style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:rgba(204,120,92,0.08)"><div style="width:48px;height:48px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:22px">🌶️</div><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:15px;font-weight:700">엽기떡볶이</span><span style="font-size:10px;background:#FFE8E8;color:#E53935;padding:2px 6px;border-radius:4px;font-weight:700">3,000원 할인</span></div><div style="font-size:12px;color:#888;margin-top:2px">25~35분</div></div><span style="color:#CC785C;font-size:20px;font-weight:300;line-height:1">›</span></div>
 <div onclick="goToBrand('신전떡볶이')" ontouchstart="this.style.background='#FAF7F2'" ontouchend="this.style.background='#fff'" style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:rgba(204,120,92,0.08)"><div style="width:48px;height:48px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:22px">🍜</div><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:15px;font-weight:700">신전떡볶이</span><span style="font-size:10px;background:#FFE8E8;color:#E53935;padding:2px 6px;border-radius:4px;font-weight:700">4,000원 할인</span></div><div style="font-size:12px;color:#888;margin-top:2px">20~30분</div></div><span style="color:#CC785C;font-size:20px;font-weight:300;line-height:1">›</span></div>
@@ -446,7 +445,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;background:#FAF9
 </div></div>
 <!-- 감칠맛 -->
 <div id="tp-umami" class="tp" style="display:none">
-<div style="padding:16px 16px 12px"><div style="font-size:16px;font-weight:700"><span style="color:#CC785C">감칠맛</span> 당길 때 이런 가게 어때요?</div></div>
+<div style="padding:16px 16px 12px"><div style="font-size:16px;font-weight:700"><span style="color:#CC785C">입맛돋구는 감칠맛</span> 당길 때 이런 가게 어때요?</div></div>
 <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:8px">
 <div onclick="goToBrand('교촌치킨')" ontouchstart="this.style.background='#FAF7F2'" ontouchend="this.style.background='#fff'" style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:rgba(204,120,92,0.08)"><div style="width:48px;height:48px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:22px">🍗</div><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:15px;font-weight:700">교촌치킨</span><span style="font-size:10px;background:#FFE8E8;color:#E53935;padding:2px 6px;border-radius:4px;font-weight:700">2,000원 할인</span></div><div style="font-size:12px;color:#888;margin-top:2px">30~40분</div></div><span style="color:#CC785C;font-size:20px;font-weight:300;line-height:1">›</span></div>
 <div onclick="goToBrand('도미노피자')" ontouchstart="this.style.background='#FAF7F2'" ontouchend="this.style.background='#fff'" style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:rgba(204,120,92,0.08)"><div style="width:48px;height:48px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:22px">🍕</div><div style="flex:1"><div style="font-size:15px;font-weight:700">도미노피자</div><div style="font-size:12px;color:#888;margin-top:2px">25~35분</div></div><span style="color:#CC785C;font-size:20px;font-weight:300;line-height:1">›</span></div>
@@ -537,10 +536,9 @@ body{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;background:#FAF9
 <div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🍕 피자</div>
 <div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🍔 패스트푸드</div>
 <div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🍲 찜</div>
-<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🌶️ 매운맛</div>
-<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🧂 짭짤한맛</div>
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🌶️ 매콤한 맛</div>
 <div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🍰 달달한맛</div>
-<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🥗 건강한맛</div>
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">😋 입맛돋구는 감칠맛</div>
 </div>
 <div style="padding:8px 16px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px">
 <div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid #f0f0f0">
