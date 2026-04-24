@@ -378,6 +378,40 @@ body{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;background:#FAF9
 <div class="frame">
 <!-- 테마 탭 -->
 <div class="hdr" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">🌐</span><h1>배민 먹을복 페스타</h1></div><div style="display:flex;align-items:center;gap:12px"><span style="font-size:20px;cursor:pointer">🛒</span><span style="font-size:20px;cursor:pointer">👤</span></div></div>
+<!-- ===== MASS 혜택: 복주머니 쿠폰 배너 ===== -->
+<div id="bokjumuni-banner" style="width:100%;background:linear-gradient(135deg,#FFF5EC 0%,#FFF0E2 100%);position:relative;overflow:hidden;border-bottom:1px solid rgba(204,120,92,0.15);">
+  <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FF8A3D,#FF6B00,#CC785C);"></div>
+  <div style="position:absolute;top:-24px;right:-12px;width:100px;height:100px;background:radial-gradient(circle,rgba(0,194,178,0.10) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:-20px;left:60px;width:80px;height:80px;background:radial-gradient(circle,rgba(255,107,0,0.08) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="position:relative;display:flex;align-items:center;padding:11px 14px 11px 12px;gap:10px;">
+    <div style="flex-shrink:0;width:48px;height:48px;">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="mintBag" cx="38%" cy="32%"><stop offset="0%" stop-color="#4EDED4"/><stop offset="50%" stop-color="#00C2B2"/><stop offset="100%" stop-color="#009E90"/></radialGradient>
+          <radialGradient id="mintNeck" cx="50%" cy="40%"><stop offset="0%" stop-color="#26D4CA"/><stop offset="100%" stop-color="#00A89A"/></radialGradient>
+        </defs>
+        <ellipse cx="24" cy="31" rx="16" ry="14" fill="url(#mintBag)"/>
+        <ellipse cx="18" cy="25" rx="5" ry="3.5" fill="rgba(255,255,255,0.28)" transform="rotate(-15 18 25)"/>
+        <rect x="18" y="13" width="12" height="7" rx="3" fill="url(#mintNeck)"/>
+        <path d="M 13 11 C 10 7, 15 5, 18 8.5 C 19 10.5, 18 12, 18 13" fill="#00C2B2"/>
+        <path d="M 35 11 C 38 7, 33 5, 30 8.5 C 29 10.5, 30 12, 30 13" fill="#00C2B2"/>
+        <circle cx="24" cy="12" r="3.5" fill="#FF6B00"/>
+        <circle cx="24" cy="12" r="2" fill="#FF8A3D"/>
+        <path d="M 21 14.5 Q 18 18 20 21" stroke="#00A89A" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <path d="M 27 14.5 Q 30 18 28 21" stroke="#00A89A" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <text x="24" y="36" text-anchor="middle" font-size="13" font-weight="900" fill="#fff" font-family="Apple SD Gothic Neo, sans-serif" opacity="0.95">복</text>
+        <circle cx="38" cy="18" r="1.5" fill="#FF6B00" opacity="0.8"/>
+        <circle cx="7" cy="28" r="1" fill="#00C2B2" opacity="0.6"/>
+        <circle cx="40" cy="35" r="1" fill="#4EDED4" opacity="0.5"/>
+      </svg>
+    </div>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:15px;font-weight:800;color:#1A1A1A;line-height:1.25;letter-spacing:-0.4px;white-space:nowrap;">복주머니 열고 <span style="color:#FF6B00;">쿠폰 받아가세요!</span></div>
+      <div style="font-size:11px;font-weight:500;color:#888;margin-top:3px;white-space:nowrap;">먹을복 페스타 전용 · 최대 <span style="color:#CC785C;font-weight:700;">3,000원</span> 즉시 할인</div>
+    </div>
+    <button onclick="" style="flex-shrink:0;background:#1A1A1A;color:#fff;font-size:12px;font-weight:700;padding:9px 14px;border-radius:22px;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);white-space:nowrap;letter-spacing:-0.2px;line-height:1.4;">쿠폰받기 →</button>
+  </div>
+</div>
 <!-- ===== W1~2 먹을복 뽑기 ===== -->
 <div id="wp-w12" class="wp on">
 <div class="cta-area" id="cta-w12">
