@@ -379,12 +379,67 @@ body{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;background:#FAF9
 <!-- 테마 탭 -->
 <div class="hdr" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">🌐</span><h1>배민 먹을복 페스타</h1></div><div style="display:flex;align-items:center;gap:12px"><span style="font-size:20px;cursor:pointer">🛒</span><span style="font-size:20px;cursor:pointer">👤</span></div></div>
 <!-- ===== MASS 혜택: 복주머니 쿠폰 배너 ===== -->
-<div id="bokjumuni-banner" style="width:100%;background:linear-gradient(135deg,#FFF5EC 0%,#FFF0E2 100%);position:relative;overflow:hidden;border-bottom:1px solid rgba(204,120,92,0.15);">
-  <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FF8A3D,#FF6B00,#CC785C);"></div>
-  <div style="position:absolute;top:-24px;right:-12px;width:100px;height:100px;background:radial-gradient(circle,rgba(0,194,178,0.10) 0%,transparent 70%);pointer-events:none;"></div>
-  <div style="position:absolute;bottom:-20px;left:60px;width:80px;height:80px;background:radial-gradient(circle,rgba(255,107,0,0.08) 0%,transparent 70%);pointer-events:none;"></div>
+<style>
+@keyframes bk-burst {
+  0%   { transform: translate(0,0) scale(1.2) rotate(0deg); opacity: 1; }
+  60%  { opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--tr)); opacity: 0; }
+}
+@keyframes bk-burst-loop {
+  0%   { transform: translate(0,0) scale(1.2) rotate(0deg); opacity: 1; }
+  60%  { opacity: 1; }
+  85%  { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--tr)); opacity: 0; }
+  100% { transform: translate(0,0) scale(0) rotate(0deg); opacity: 0; }
+}
+@keyframes bk-float {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50%       { transform: translateY(-5px) rotate(3deg); }
+}
+.bk-particle {
+  position: absolute;
+  font-size: 12px;
+  pointer-events: none;
+  left: 30px; top: calc(50% - 6px);
+  transform-origin: center;
+  animation: bk-burst-loop 2.4s ease-out infinite;
+  z-index: 10;
+}
+.bk-dot {
+  position: absolute;
+  pointer-events: none;
+  left: 30px; top: 50%;
+  border-radius: 50%;
+  transform-origin: center;
+  animation: bk-burst-loop 2.4s ease-out infinite;
+  z-index: 10;
+}
+.bk-bag-wrap {
+  animation: bk-float 2.4s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+</style>
+<div id="bokjumuni-banner" style="width:100%;background:linear-gradient(135deg,#FFF5EC 0%,#FFF0E2 100%);position:relative;border-bottom:1px solid rgba(204,120,92,0.15);">
+  <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FF8A3D,#FF6B00,#CC785C);z-index:1;"></div>
+
+  <!-- 컨페티 파티클: 복주머니에서 사방으로 팡! -->
+  <span class="bk-particle" style="--tx:-44px;--ty:-30px;--tr:250deg;animation-delay:0s;">🌟</span>
+  <span class="bk-particle" style="--tx:72px;--ty:-36px;--tr:180deg;animation-delay:0.18s;">✨</span>
+  <span class="bk-particle" style="--tx:96px;--ty:-10px;--tr:320deg;animation-delay:0.06s;font-size:14px;">🎊</span>
+  <span class="bk-particle" style="--tx:80px;--ty:24px;--tr:200deg;animation-delay:0.30s;font-size:10px;color:#FF6B00;font-weight:900;">복</span>
+  <span class="bk-particle" style="--tx:-36px;--ty:26px;--tr:140deg;animation-delay:0.12s;font-size:10px;color:#00C2B2;font-weight:900;">복</span>
+  <span class="bk-particle" style="--tx:56px;--ty:34px;--tr:270deg;animation-delay:0.24s;font-size:13px;">⭐</span>
+  <span class="bk-particle" style="--tx:-50px;--ty:8px; --tr:100deg;animation-delay:0.09s;font-size:10px;">✦</span>
+  <span class="bk-particle" style="--tx:108px;--ty:4px; --tr:350deg;animation-delay:0.36s;font-size:11px;">🪙</span>
+  <div class="bk-dot" style="--tx:62px;--ty:-24px;--tr:210deg;animation-delay:0.04s;background:#FF6B00;width:7px;height:7px;"></div>
+  <div class="bk-dot" style="--tx:-32px;--ty:-20px;--tr:290deg;animation-delay:0.22s;background:#00C2B2;width:6px;height:6px;"></div>
+  <div class="bk-dot" style="--tx:84px;--ty:-6px; --tr:170deg;animation-delay:0.15s;background:#FFD700;width:8px;height:8px;"></div>
+  <div class="bk-dot" style="--tx:-24px;--ty:30px;--tr:130deg;animation-delay:0.28s;background:#FF8A3D;width:5px;height:5px;"></div>
+  <div class="bk-dot" style="--tx:50px;--ty:38px; --tr:240deg;animation-delay:0.42s;background:#00C2B2;width:6px;height:6px;"></div>
+  <div class="bk-dot" style="--tx:-14px;--ty:-34px;--tr:310deg;animation-delay:0.33s;background:#CC785C;width:5px;height:5px;"></div>
+
   <div style="position:relative;display:flex;align-items:center;padding:11px 14px 11px 12px;gap:10px;">
-    <div style="flex-shrink:0;width:48px;height:48px;">
+    <!-- 복주머니: 둥실 떠있는 float 애니메이션 -->
+    <div class="bk-bag-wrap" style="flex-shrink:0;width:48px;height:48px;">
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <radialGradient id="mintBag" cx="38%" cy="32%"><stop offset="0%" stop-color="#4EDED4"/><stop offset="50%" stop-color="#00C2B2"/><stop offset="100%" stop-color="#009E90"/></radialGradient>
@@ -400,9 +455,6 @@ body{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;background:#FAF9
         <path d="M 21 14.5 Q 18 18 20 21" stroke="#00A89A" stroke-width="1.2" stroke-linecap="round" fill="none"/>
         <path d="M 27 14.5 Q 30 18 28 21" stroke="#00A89A" stroke-width="1.2" stroke-linecap="round" fill="none"/>
         <text x="24" y="36" text-anchor="middle" font-size="13" font-weight="900" fill="#fff" font-family="Apple SD Gothic Neo, sans-serif" opacity="0.95">복</text>
-        <circle cx="38" cy="18" r="1.5" fill="#FF6B00" opacity="0.8"/>
-        <circle cx="7" cy="28" r="1" fill="#00C2B2" opacity="0.6"/>
-        <circle cx="40" cy="35" r="1" fill="#4EDED4" opacity="0.5"/>
       </svg>
     </div>
     <div style="flex:1;min-width:0;">
