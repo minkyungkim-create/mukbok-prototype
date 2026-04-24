@@ -163,107 +163,145 @@
     }
 
     /* ============================================================================
-       WEATHER CARD
+       WEATHER HERO (통합 카드)
        ============================================================================ */
-    .weather-card {
+    .weather-hero {
+      margin: 16px 16px 0;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 6px 24px rgba(181,97,74,.22);
+    }
+
+    /* 상단: 날씨 정보 */
+    .weather-top {
+      background: linear-gradient(135deg, #CC785C 0%, #B5614A 100%);
+      padding: 18px 20px 20px;
+    }
+
+    .weather-meta-row {
       display: flex;
-      flex-direction: column;
-      gap: var(--spacing-2xl);
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
     }
 
     .weather-location {
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-bold);
-      margin-bottom: var(--spacing-lg);
-      color: var(--color-text-light);
+      font-size: 12px;
+      color: rgba(255,255,255,.75);
+      font-weight: 600;
+      letter-spacing: .3px;
     }
 
-    .weather-content {
+    .weather-badge {
       display: flex;
-      gap: var(--spacing-2xl);
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,.18);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: rgba(255,255,255,.9);
+      font-weight: 600;
     }
 
-    .weather-left {
-      flex-shrink: 0;
+    .weather-main-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
     }
 
     .weather-temp {
-      font-size: var(--font-size-3xl);
-      font-weight: var(--font-weight-black);
+      font-size: 58px;
+      font-weight: 900;
       line-height: 1;
-      color: var(--color-text-light);
+      color: #fff;
       cursor: pointer;
-      transition: opacity var(--transition-fast);
+      transition: opacity .2s;
+      letter-spacing: -2px;
     }
 
-    .weather-temp:hover {
-      opacity: 0.8;
+    .weather-temp:hover { opacity: .8; }
+
+    .weather-sub {
+      text-align: right;
+      padding-bottom: 4px;
     }
 
-    .weather-right {
+    .weather-feels {
+      font-size: 13px;
+      color: rgba(255,255,255,.85);
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .weather-cond {
+      font-size: 11px;
+      color: rgba(255,255,255,.6);
+      line-height: 1.5;
+    }
+
+    /* 하단: 추천 연결 */
+    .weather-rec {
+      background: #FAF2EC;
+      padding: 14px 20px 18px;
+    }
+
+    .rec-connector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .rec-connector-line {
       flex: 1;
+      height: 1px;
+      background: #e8cfc0;
     }
 
-    .weather-status {
-      font-size: var(--font-size-lg);
-      font-weight: var(--font-weight-bold);
-      margin-bottom: var(--spacing-sm);
-      color: var(--color-text-light);
+    .rec-connector-label {
+      font-size: 10px;
+      color: #CC785C;
+      font-weight: 700;
+      letter-spacing: .5px;
+      white-space: nowrap;
     }
 
-    .weather-detail {
-      font-size: var(--font-size-base);
-      color: var(--color-text-light);
-      margin-bottom: var(--spacing-xs);
-    }
-
-    .weather-footer {
+    .rec-body {
       display: flex;
       align-items: center;
-      gap: var(--spacing-sm);
-      margin-top: var(--spacing-lg);
-      padding-top: var(--spacing-lg);
-      border-top: 1px solid rgba(255,255,255,0.2);
-      font-size: var(--font-size-xs);
-      color: var(--color-text-light);
-    }
-
-    /* ============================================================================
-       THEME CARD
-       ============================================================================ */
-    .theme-card {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-xl);
+      gap: 14px;
     }
 
     .theme-icon {
-      font-size: 32px;
+      font-size: 38px;
       flex-shrink: 0;
+      line-height: 1;
     }
 
-    .theme-content {
-      flex: 1;
-    }
+    .theme-content { flex: 1; }
 
     .theme-label {
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
-      margin-bottom: var(--spacing-md);
-      font-weight: var(--font-weight-semibold);
+      font-size: 10px;
+      color: #bbb;
+      font-weight: 600;
+      letter-spacing: .4px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
     }
 
     .theme-title {
-      font-size: var(--font-size-2xl);
-      font-weight: var(--font-weight-heavy);
-      margin-bottom: var(--spacing-xs);
-      color: var(--color-text-primary);
+      font-size: 19px;
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+      line-height: 1.2;
     }
 
     .theme-desc {
-      font-size: var(--font-size-sm);
-      color: #555;
-      line-height: 1.4;
+      font-size: 11px;
+      color: #999;
+      line-height: 1.5;
     }
 
     /* ============================================================================
@@ -917,31 +955,38 @@
     </header>
 
     <section class="hero">
-      <article class="card card--hero card--warm weather-card">
-        <div class="weather-location">📍 강남구</div>
-        <div class="weather-content">
-          <div class="weather-left">
-            <div class="weather-temp" id="current-temp-display" title="클릭하여 온도 변경">34°C</div>
+      <div class="weather-hero">
+        <!-- 날씨 정보 -->
+        <div class="weather-top">
+          <div class="weather-meta-row">
+            <span class="weather-location">📍 강남구</span>
+            <span class="weather-badge" id="weather-status-badge">☀️ 맑음</span>
           </div>
-          <div class="weather-right">
-            <div class="weather-status">맑음</div>
-            <div class="weather-detail">체감 38°C</div>
-            <div class="weather-detail">습도 70% | 미세먼지 보통</div>
-            <div class="weather-footer">
-              <span>기상청 발표 기준 오늘 최고 온도입니다</span>
+          <div class="weather-main-row">
+            <div class="weather-temp" id="current-temp-display" title="클릭하여 온도 변경">34°C</div>
+            <div class="weather-sub">
+              <div class="weather-feels">체감 38°C</div>
+              <div class="weather-cond">습도 70%<br>미세먼지 보통</div>
             </div>
           </div>
         </div>
-      </article>
-
-      <article class="card card--hero card--light theme-card" id="temp-theme-card">
-        <span class="theme-icon" id="theme-icon">🔥</span>
-        <div class="theme-content">
-          <div class="theme-label">오늘의 추천메뉴는?</div>
-          <div id="theme-title" class="theme-title">마라·매콤한 여름</div>
-          <div id="theme-desc" class="theme-desc">매우 더운 날씨, 땀 내기로 더위를 극복하는 자극음식</div>
+        <!-- 날씨→추천 연결 -->
+        <div class="weather-rec">
+          <div class="rec-connector">
+            <div class="rec-connector-line"></div>
+            <span class="rec-connector-label">이런 날씨엔 이게 당겨요</span>
+            <div class="rec-connector-line"></div>
+          </div>
+          <div class="rec-body">
+            <span class="theme-icon" id="theme-icon">🔥</span>
+            <div class="theme-content">
+              <div class="theme-label">오늘의 먹을복 추천</div>
+              <div id="theme-title" class="theme-title">마라·매콤한 여름</div>
+              <div id="theme-desc" class="theme-desc">땀 내기로 더위를 극복하는 자극음식</div>
+            </div>
+          </div>
         </div>
-      </article>
+      </div>
     </section>
 
     <section class="promotions">
