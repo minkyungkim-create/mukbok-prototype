@@ -1,168 +1,384 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>배민 먹을복 - 날씨 기반 추천</title>
-  <style>
-    /* ============================================================================
-       DESIGN TOKENS & VARIABLES
-       ============================================================================ */
-    :root {
-      /* Semantic Colors */
-      --color-text-primary: #1a1a1a;
-      --color-text-secondary: #888;
-      --color-text-tertiary: #999;
-      --color-text-light: rgba(255,255,255,0.8);
-      --color-text-lighter: rgba(255,255,255,0.6);
-      --color-text-lightest: rgba(255,255,255,0.3);
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>배민 먹을복 페스타 - 날씨 추천</title>
+<style>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;background:#FAF9F7;color:#1a1a1a}
+.frame{max-width:375px;margin:0 auto;background:#fff;min-height:100vh;position:relative}
+.hdr{padding:12px 16px;display:flex;align-items:center;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff;z-index:20}
+.hdr .back{font-size:20px;margin-right:12px;text-decoration:none;color:#1a1a1a}
+.hdr h1{font-size:17px;font-weight:700}
+/* 주차탭 */
+.wk-tabs{display:flex;border-bottom:2px solid #eee;position:sticky;top:45px;background:#fff;z-index:15}
+.wk-tab{flex:1;text-align:center;padding:14px 0 10px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+.wk-tab .t1{font-size:14px;font-weight:700;color:#aaa}.wk-tab .t2{font-size:11px;color:#bbb;margin-top:2px}
+.wk-tab.on .t1,.wk-tab.on .t2{color:#CC785C}.wk-tab.on{border-bottom-color:#CC785C}
+.wp{display:none}.wp.on{display:block}
+/* KV */
+.kv{width:100%;height:100px;background:#D4A899 url('') center/cover no-repeat;display:flex;align-items:flex-end;justify-content:center;color:#fff;font-size:14px;position:relative;overflow:hidden}
+.kv img{width:100%;height:100%;object-fit:cover}
+/* CTA */
+.cta-area{padding:24px 16px;text-align:center;display:none}
+.cta-area p{font-size:15px;color:#555;margin-bottom:14px;line-height:1.5}
+.cta-btn{width:100%;padding:16px;background:#CC785C;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;display:none}
+.cta-btn:active{background:#B5614A}
+.result{display:none}.result.show{display:block}
+/* 미로그인 backfill */
+.bf-login{margin:20px 16px;padding:24px 20px;background:linear-gradient(135deg,#FF6B00,#FF8A00);border-radius:16px;color:#fff;text-align:center}
+.bf-login .bf-emoji{font-size:48px;margin-bottom:12px}
+.bf-login .bf-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.bf-login .bf-desc{font-size:14px;opacity:.9;margin-bottom:16px;line-height:1.5}
+.bf-login-btn{width:100%;padding:14px;background:#fff;color:#FF6B00;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}
+.bf-popular{margin:16px 16px;padding:16px;background:#FAF7F2;border-radius:14px}
+.bf-popular .bp-title{font-size:15px;font-weight:700;margin-bottom:12px;color:#1a1a1a}
+.bf-popular .bp-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0}
+.bf-popular .bp-item:last-child{border-bottom:none}
+.bf-popular .bp-rank{font-size:14px;font-weight:800;color:#CC785C;width:24px}
+.bf-popular .bp-name{flex:1;font-size:14px;font-weight:600}
+.bf-popular .bp-count{font-size:12px;color:#888}
+/* 결과카드 */
+.rc{margin:20px 16px;padding:24px 20px;background:linear-gradient(135deg,#CC785C,#B5614A);border-radius:16px;color:#fff;position:relative}
+.rc .share{position:absolute;top:16px;right:16px;width:32px;height:32px;background:rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer}
+.rc .nick{font-size:14px;opacity:.9;margin-bottom:2px}.rc .ttl{font-size:22px;font-weight:800;margin-bottom:18px}
+.bars{display:flex;flex-direction:column;gap:10px}
+.br{display:flex;align-items:center;gap:10px}.br .lb{font-size:11px;width:88px;flex-shrink:0;opacity:.9;white-space:nowrap}
+.br .bg{flex:1;height:8px;background:rgba(255,255,255,.25);border-radius:4px;overflow:hidden}
+.br .fl{height:100%;border-radius:4px;background:#fff;transition:width 1s}.br .pc{font-size:12px;width:36px;text-align:right;font-weight:700}
+/* 접힘 UX */
+.rc-wrap{margin:0 0 8px}
+.rc-fold-btn{text-align:center;padding:12px;font-size:13px;color:#CC785C;font-weight:600;cursor:pointer;background:#FAF2EC;margin:0 16px;border-radius:10px}
+.rc-mini{margin:12px 16px;padding:14px 16px;background:linear-gradient(135deg,#CC785C,#B5614A);border-radius:12px;color:#fff;display:flex;align-items:center;gap:10px;cursor:pointer}
+.rc-mini-icon{font-size:20px}
+.rc-mini-text{flex:1;font-size:14px;font-weight:600}
+.rc-mini-arrow{font-size:12px;opacity:.8}
+/* 마케팅 쿠폰 */
+.mkt-cpn{margin:16px 16px;padding:20px;background:#fff;border-radius:16px;border:1px solid #f0f0f0}
+.mkt-cpn-t{font-size:18px;font-weight:800;margin-bottom:2px}
+.mkt-cpn-sub{font-size:12px;color:#888;margin-bottom:16px}
+.mkt-card{display:flex;align-items:center;gap:12px;padding:16px;background:#FAF7F2;border-radius:14px;margin-bottom:10px;position:relative}
+.mkt-card:last-child{margin-bottom:0}
+.mkt-ic{width:48px;height:48px;border-radius:12px;background:#FAF0EA;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.mkt-bd{flex:1;min-width:0}
+.mkt-cat{font-size:12px;color:#888;margin-bottom:2px}
+.mkt-amt{font-size:17px;font-weight:800;white-space:nowrap}.mkt-amt b{color:#7C3AED}
+.mkt-cond{font-size:11px;color:#aaa;margin-top:2px;line-height:1.4}
+.mkt-dl{width:40px;height:40px;background:#7C3AED;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;cursor:pointer}
+.mkt-tag{position:absolute;top:10px;right:10px;font-size:10px;background:#7C3AED;color:#fff;padding:3px 8px;border-radius:6px;font-weight:700}
+.mkt-tip{display:flex;align-items:center;gap:6px;margin-top:14px;padding:10px 12px;background:#FFF8F0;border-radius:10px;font-size:12px;color:#FF8A00;font-weight:600}
+/* 쿠폰 섹션 */
+.cpn-sec{margin:16px 16px;padding:20px;background:#fff;border-radius:16px;border:1px solid #f0f0f0}
+.cpn-sec-t{font-size:18px;font-weight:800;text-align:center;margin-bottom:2px}
+.cpn-sec-sub{font-size:13px;color:#888;text-align:center;margin-bottom:16px}
+/* 쿠폰팩 */
+.cpn-pack{display:flex;align-items:center;justify-content:space-between;padding:16px;background:#FAF7F2;border:1.5px solid #eee;border-radius:14px;cursor:pointer;margin-bottom:16px}
+.cpn-pack:active{background:#f0f0f0}
+.cpn-pack-left{display:flex;align-items:center;gap:12px}
+.cpn-pack-icons{font-size:18px;letter-spacing:2px}
+.cpn-pack-label{font-size:12px;color:#888}
+.cpn-pack-amt{font-size:16px;font-weight:800}
+.cpn-pack-amt b{color:#7C3AED}
+.cpn-pack-dl{width:40px;height:40px;background:#7C3AED;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.cpn-pack.downloaded .cpn-pack-dl{background:#ccc}
+/* 브랜드 가로 스크롤 */
+.cpn-brands{display:flex;gap:16px;overflow-x:auto;padding:4px 0;-webkit-overflow-scrolling:touch}.cpn-brands::-webkit-scrollbar{display:none}
+.cpn-brand{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;cursor:pointer}
+.cpn-brand span{font-size:11px;color:#888;white-space:nowrap}
+.cpn-brand-ic{width:56px;height:56px;border-radius:50%;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid transparent}
+.cpn-brand-ic.active{border-color:#1a1a1a;background:#F8F4F0}
+/* 브랜드 패널 */
+.bp{margin:16px 16px}
+.bp-hero{display:flex;align-items:center;gap:12px;padding:20px;background:linear-gradient(135deg,#F8F4F0,#f0f0f0);border-radius:14px 14px 0 0;position:relative}
+.bp-hero-bg{font-size:48px;flex-shrink:0}
+.bp-hero-info{flex:1}
+.bp-hero-brand{font-size:13px;color:#555;margin-bottom:2px}
+.bp-hero-deal{font-size:18px;font-weight:800;white-space:nowrap}
+.bp-hero-deal b{color:#7C3AED}
+.bp-hero-dl{width:40px;height:40px;background:#7C3AED;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;position:relative;cursor:pointer}
+.bp-dl-badge{position:absolute;top:-4px;right:-4px;background:#E53935;color:#fff;font-size:10px;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.bp-hero-cond{font-size:12px;color:#888;padding:8px 20px 16px;background:#F8F4F0;border-radius:0 0 14px 14px;margin-bottom:16px}
+.bp-near-t{font-size:16px;font-weight:700;padding:0 0 12px;display:flex;align-items:center;justify-content:space-between}
+.bp-near-more{font-size:12px;color:#888;font-weight:400;cursor:pointer}
+.bp-shop{display:flex;gap:12px;padding:14px 0;border-top:1px solid #f0f0f0;align-items:flex-start}
+.bp-shop-img{width:80px;height:80px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0}
+.bp-shop-bd{flex:1;min-width:0}
+.bp-shop-nm{font-size:15px;font-weight:700;margin-bottom:3px}
+.bp-shop-meta{font-size:12px;color:#888;margin-bottom:2px}
+.bp-shop-cpn{display:inline-block;font-size:12px;color:#CC785C;font-weight:700;margin-top:4px;padding:3px 8px;background:#FAF2EC;border-radius:6px}
+/* 맛 레이블 태그 */
+.br .pc{font-size:11px;width:auto;min-width:60px;text-align:right;font-weight:600;white-space:nowrap}
+.tag-hot{color:#FFE082}.tag-mid{color:rgba(255,255,255,.8)}.tag-low{color:rgba(255,255,255,.6)}
+/* 한줄평 */
+.rv{margin:0 16px 16px;padding:18px 20px;background:#FAF7F2;border-radius:14px}
+.rv .rv-t{font-size:14px;font-weight:700;margin-bottom:10px;color:#CC785C}.rv p{font-size:13px;color:#555;line-height:1.6}
+/* 맛탭 */
+.tt{display:flex;gap:6px;padding:16px 16px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}.tt::-webkit-scrollbar{display:none}
+.ttb{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #eee;background:#fff;cursor:pointer;white-space:nowrap;color:#888}
+.ttb.on{background:#CC785C;color:#fff;border-color:#CC785C}
+.ttb.my{position:relative}.ttb.my::after{content:'MY';position:absolute;top:-6px;right:-4px;font-size:9px;background:#FF6B00;color:#fff;padding:1px 4px;border-radius:6px;font-weight:700}
+.tp{display:none}.tp.on{display:block}
+/* 가게 섹션 */
+.st{padding:16px 16px 8px;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.st em{color:#CC785C;font-style:normal;margin-right:1px}
+.st .loc{font-size:12px;color:#CC785C;background:#FAF2EC;padding:4px 10px;border-radius:12px;font-weight:600}
+.refresh-row{display:flex;align-items:center;justify-content:space-between;padding:0 16px 10px}
+.refresh-row .sub{font-size:12px;color:#aaa}
+.refresh-btn{background:none;border:1px solid #ddd;border-radius:16px;padding:4px 12px;font-size:11px;color:#888;cursor:pointer;display:flex;align-items:center;gap:4px}
+.refresh-btn:active{background:#FAF9F7}
+/* 가게카드 */
+.shop{margin:0 16px 12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;display:flex;gap:12px;align-items:center}
+.shop:active{background:#fafafa}
+.shop-img{width:56px;height:56px;border-radius:12px;background:#FAF9F7;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px}
+.shop-bd{flex:1;min-width:0}
+.shop-top{display:flex;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap}
+.shop-nm{font-size:15px;font-weight:700}
+.cpn{font-size:10px;background:#FFE8E8;color:#E53935;padding:2px 6px;border-radius:4px;font-weight:700;white-space:nowrap}
+.shop-rt{font-size:12px;color:#888;margin-bottom:1px}.shop-dl{font-size:11px;color:#aaa}
+.shop-btn{padding:8px 16px;background:#CC785C;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0}
+/* 상시혜택 - 배짱할인 스타일 */
+.promo{margin-top:24px;background:#F5F0E8;padding:24px 0}
+.promo-t{font-size:18px;font-weight:800;padding:0 16px 4px}.promo-sub{font-size:13px;color:#888;padding:0 16px 16px}
+.promo-list{padding:0 16px;display:flex;flex-direction:column;gap:12px}
+.promo-item{background:#fff;border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;border:1px solid #f0f0f0}
+.promo-ic{width:48px;height:48px;border-radius:12px;background:#FAF2EC;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.promo-bd{flex:1}.promo-nm{font-size:14px;font-weight:700;margin-bottom:2px}.promo-ds{font-size:12px;color:#888;line-height:1.4}
+.promo-arr{color:#ccc;font-size:16px}
+/* 배짱할인 세부 섹션 */
+.promo-sec{padding:0 16px;margin-bottom:20px}
+.promo-sec-t{font-size:15px;font-weight:700;margin-bottom:4px}.promo-sec-sub{font-size:12px;color:#888;margin-bottom:12px}
+.promo-sec-sub b{color:#E53935}
+.coupon-box{background:#fff;border-radius:14px;padding:20px;text-align:center;border:1px solid #f0f0f0;margin-bottom:12px}
+.coupon-box .q-marks{font-size:36px;letter-spacing:12px;margin-bottom:10px}
+.coupon-box .q-desc{font-size:13px;color:#888}
+.brand-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}.brand-row::-webkit-scrollbar{display:none}
+.brand-chip{width:44px;height:44px;border-radius:50%;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid #eee}
+.deal-card{background:#fff;border-radius:14px;padding:14px;border:1px solid #f0f0f0;margin-bottom:10px;display:flex;gap:12px;align-items:center}
+.deal-img{width:80px;height:60px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.deal-bd{flex:1}.deal-nm{font-size:14px;font-weight:700;margin-bottom:2px}.deal-price{font-size:12px;color:#E53935;font-weight:700}.deal-orig{font-size:11px;color:#bbb;text-decoration:line-through;margin-left:4px}
+.deal-btn{padding:6px 14px;background:#CC785C;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0}
+.near-card{background:#fff;border-radius:14px;padding:14px;border:1px solid #f0f0f0;margin-bottom:10px;display:flex;gap:10px;align-items:center}
+.near-img{width:48px;height:48px;border-radius:10px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.near-bd{flex:1}.near-nm{font-size:13px;font-weight:700;margin-bottom:1px}.near-ds{font-size:11px;color:#888}
+.more-btn{display:block;width:100%;padding:12px;background:#fff;border:1px solid #ddd;border-radius:12px;text-align:center;font-size:13px;color:#555;font-weight:600;cursor:pointer;margin-top:8px}
+.pickup-banner{background:#CC785C;border-radius:14px;padding:18px;text-align:center;color:#fff;margin:0 16px 20px}
+.pickup-banner .pk-t{font-size:16px;font-weight:700;margin-bottom:4px}.pickup-banner .pk-s{font-size:12px;opacity:.85}
+.share-sec{padding:20px 16px;text-align:center;background:#fff;border-radius:14px;margin:0 16px 20px;border:1px solid #f0f0f0}
+.share-sec p{font-size:14px;font-weight:600;margin-bottom:12px}
+.share-icons{display:flex;justify-content:center;gap:20px}
+.share-icon{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:#888;cursor:pointer}
+.share-icon span{width:44px;height:44px;border-radius:50%;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:20px}
+/* 섹션2 꿀조합 */
+.combo-hdr{padding:24px 16px 8px}.combo-hdr h2{font-size:22px;font-weight:800;margin-bottom:4px}.combo-hdr .sub{font-size:14px;color:#888}
+.combo-tabs{display:flex;margin:16px 16px 0;background:#f0f0f0;border-radius:24px;padding:3px}
+.combo-tab{flex:1;text-align:center;padding:10px 0;border-radius:22px;font-size:13px;font-weight:600;color:#888;cursor:pointer}
+.combo-tab.on{background:#CC785C;color:#fff}
+.combo-panel{display:none}.combo-panel.on{display:block}
+.combo-card{margin:12px 16px;padding:16px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;display:flex;align-items:center;gap:12px}
+.combo-imgs{display:flex;gap:4px;flex-shrink:0}.combo-imgs span{font-size:28px}
+.combo-bd{flex:1}.combo-cat{font-size:12px;color:#888;margin-bottom:2px}.combo-nm{font-size:15px;font-weight:700;margin-bottom:6px}
+.combo-tags{display:flex;gap:6px}.combo-tag{font-size:11px;padding:4px 10px;border:1px solid #ddd;border-radius:14px;color:#555}
+.combo-btn{padding:8px 16px;background:#CC785C;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0}
+/* pair-deal 아코디언 */
+.pair{margin:12px 16px;border:1px solid #f0f0f0;border-radius:14px;overflow:hidden;background:#fff}
+.pair-hdr{display:flex;align-items:center;gap:10px;padding:14px;cursor:pointer;transition:background .2s}
+.pair-hdr:active{background:#fafafa}
+.pair-thumbs{display:flex;align-items:center;gap:0;flex-shrink:0}
+.pair-th{width:48px;height:48px;border-radius:10px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid #fff;position:relative}
+.pair-th:nth-child(2){margin-left:-10px}
+.pair-plus{font-size:14px;color:#ccc;margin:0 2px}
+.pair-info{flex:1;min-width:0}
+.pair-label{font-size:11px;color:#888;margin-bottom:1px}
+.pair-nm{font-size:14px;font-weight:700}
+.pair-price{display:flex;align-items:center;gap:4px;margin-top:2px;flex-wrap:wrap}
+.pair-final{font-size:13px;font-weight:700;color:#E53935}
+.pair-orig{font-size:11px;color:#bbb;text-decoration:line-through}
+.pair-save{font-size:10px;color:#CC785C;font-weight:600}
+.pair-chev{font-size:14px;color:#ccc;transition:transform .3s;flex-shrink:0}
+.pair.open .pair-chev{transform:rotate(180deg)}
+.pair-detail{max-height:0;overflow:hidden;transition:max-height .4s ease;background:#FAF7F2}
+.pair.open .pair-detail{max-height:500px}
+.pair-shop{display:flex;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid #f0f0f0}
+.pair-shop-img{width:44px;height:44px;border-radius:10px;background:#eee;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pair-shop-bd{flex:1;min-width:0}
+.pair-shop-nm{font-size:13px;font-weight:700;margin-bottom:1px}
+.pair-shop-ds{font-size:11px;color:#888}
+.pair-shop-btn{padding:6px 14px;background:#CC785C;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0}
+/* pair 쿠폰 각각 지급 */
+.pair-coupons{display:flex;gap:6px;padding:10px 14px;border-top:1px solid #f0f0f0;background:#FFF8F0}
+.point-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#EDE9FE;border-top:1px solid #e8e4ff}
+.point-banner .pb-tag{font-size:10px;background:#fff;color:#8B5CF6;padding:2px 8px;border-radius:10px;font-weight:700;white-space:nowrap}
+.point-banner .pb-text{flex:1;font-size:12px;font-weight:700;color:#1a1a1a;line-height:1.4}
+.point-banner .pb-text b{color:#8B5CF6}
+.point-banner .pb-badge{background:#8B5CF6;color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:10px;white-space:nowrap}
+.pair-cpn{font-size:11px;background:#FFE8E8;color:#E53935;padding:4px 10px;border-radius:8px;font-weight:700;display:flex;align-items:center;gap:4px}
+/* 가게 브랜드 아코디언 */
+.brand-acc{margin:0 16px 10px;border:1px solid #f0f0f0;border-radius:14px;overflow:hidden;background:#fff}
+.brand-hdr{display:flex;align-items:center;gap:10px;padding:14px;cursor:pointer}
+.brand-hdr:active{background:#fafafa}
+.brand-ic{width:44px;height:44px;border-radius:10px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.brand-bd{flex:1;min-width:0}
+.brand-nm{font-size:14px;font-weight:700;margin-bottom:1px}
+.brand-cpn{font-size:10px;background:#FFE8E8;color:#E53935;padding:2px 6px;border-radius:4px;font-weight:700;margin-left:6px}
+.brand-sub{font-size:11px;color:#888}
+.brand-chev{font-size:12px;color:#ccc;transition:transform .3s;flex-shrink:0}
+.brand-acc.open .brand-chev{transform:rotate(180deg)}
+.brand-detail{max-height:0;overflow:hidden;transition:max-height .4s ease;background:#FAF7F2}
+.brand-acc.open .brand-detail{max-height:400px}
+.branch{display:flex;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid #f0f0f0}
+.branch-nm{flex:1;font-size:13px;font-weight:600}
+.branch-ds{font-size:11px;color:#888;margin-right:8px}
+.branch-btn{padding:6px 14px;background:#CC785C;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+/* 리뷰 캐러셀 */
+.rv-carousel{padding:16px 0;overflow:hidden}
+.rv-track{display:flex;transition:transform .5s ease}
+.rv-slide{flex-shrink:0;width:85%;margin-right:10px;border-radius:14px;overflow:hidden;position:relative;aspect-ratio:16/10;background:#f3f4f6}
+.rv-slide img{width:100%;height:100%;object-fit:cover}
+.rv-overlay{position:absolute;bottom:0;left:0;right:0;padding:14px 16px;background:linear-gradient(transparent,rgba(0,0,0,.5) 40%);display:flex;flex-direction:column;gap:4px}
+.rv-stars{font-size:12px;color:#fbbf24;letter-spacing:1px}
+.rv-text{font-size:13px;line-height:1.5;color:#fff;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rv-shop-info{display:flex;align-items:center;gap:10px;padding:8px 16px}
+.rv-shop-logo{width:32px;height:32px;border-radius:50%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.rv-shop-text{flex:1;min-width:0}
+.rv-shop-name{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rv-shop-menu{font-size:12px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rv-dots{display:flex;justify-content:center;gap:6px;padding:12px 0}
+.rv-dot{width:6px;height:6px;border-radius:50%;background:#ddd}
+.rv-dot.on{background:#CC785C;width:16px;border-radius:3px}
+/* 우리동네 리뷰 */
+.area-chips{display:flex;gap:6px;padding:16px 16px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}.area-chips::-webkit-scrollbar{display:none}
+.area-chip{padding:6px 14px;border-radius:16px;font-size:12px;border:1px solid #ddd;background:#fff;cursor:pointer;white-space:nowrap;color:#888;font-weight:500}
+.area-chip.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.review-card{margin:12px 16px;padding:16px;background:#fff;border:1px solid #f0f0f0;border-radius:14px}
+.review-card .rc-top{display:flex;justify-content:space-between;margin-bottom:4px}.review-card .rc-nm{font-size:15px;font-weight:700}.review-card .rc-area{font-size:12px;color:#888}
+.review-card .rc-meta{font-size:12px;color:#888}
+/* 직접추천 */
+.submit-form{padding:20px 16px}
+.submit-form label{font-size:14px;font-weight:700;display:block;margin-bottom:8px}
+.submit-form input,.submit-form textarea{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:12px;font-size:14px;font-family:inherit;margin-bottom:16px}
+.submit-form textarea{height:100px;resize:none}
+.submit-btn{width:100%;padding:16px;background:#CC785C;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px}
+.share-btn2{width:100%;padding:14px;background:#fff;border:1px solid #ddd;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;text-align:center}
+/* 제출 폼 개선 */
+.menu-select{display:flex;gap:8px;margin-bottom:16px}
+.menu-slot{flex:1;padding:14px;background:#FAF7F2;border:1.5px dashed #ddd;border-radius:12px;text-align:center;cursor:pointer;font-size:13px;color:#888;transition:all .2s}
+.menu-slot.filled{border-style:solid;border-color:#CC785C;background:#FAF2EC;color:#1a1a1a;font-weight:600}
+.menu-plus{font-size:18px;color:#ccc;display:flex;align-items:center;padding:0 4px}
+.tag-select{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.tag-opt{padding:6px 12px;border:1px solid #ddd;border-radius:16px;font-size:12px;color:#888;cursor:pointer}
+.tag-opt.on{background:#CC785C;color:#fff;border-color:#CC785C}
+.auto-name{padding:12px 14px;background:#FAF2EC;border-radius:12px;font-size:14px;font-weight:600;color:#CC785C;margin-bottom:16px;display:flex;align-items:center;gap:6px}
+/* 제출 완료 */
+.submit-done{display:none;padding:24px 16px;text-align:center}
+.submit-done.show{display:block}
+.done-card{background:linear-gradient(135deg,#CC785C,#B5614A);border-radius:16px;padding:24px;color:#fff;margin-bottom:16px}
+.done-card .d-emoji{font-size:48px;margin-bottom:8px}
+.done-card .d-title{font-size:18px;font-weight:800;margin-bottom:4px}
+.done-card .d-combo{font-size:14px;opacity:.9;margin-bottom:2px}
+.done-card .d-by{font-size:12px;opacity:.7}
+.done-actions{display:flex;flex-direction:column;gap:8px}
+.done-share{width:100%;padding:14px;background:#FEE500;color:#1a1a1a;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer}
+.done-share-sub{font-size:11px;color:#888;margin-top:4px}
+.done-order{width:100%;padding:14px;background:#CC785C;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer}
+.done-browse{width:100%;padding:12px;background:#fff;border:1px solid #ddd;border-radius:12px;font-size:13px;color:#555;cursor:pointer}
+/* 섹션3 제철 */
+.season-kv{width:100%;height:220px;background:linear-gradient(180deg,#F5E6D8,#FAF0EA);border-radius:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:20px;position:relative}
+.season-kv .s-tag{font-size:11px;background:rgba(255,255,255,.7);padding:4px 10px;border-radius:12px;margin-bottom:6px;display:inline-block}
+.season-kv .s-sale{font-size:11px;background:#FF8A80;color:#fff;padding:4px 10px;border-radius:12px;margin-bottom:6px;display:inline-block;margin-left:6px}
+.season-kv .s-title{font-size:22px;font-weight:800}.season-kv .s-title b{color:#CC785C}
+.season-kv .s-top{font-size:24px;font-weight:800;color:#1a1a1a;letter-spacing:4px;position:absolute;top:16px;left:0;right:0;text-align:center;opacity:.15}
+.realtime{margin:16px 16px;padding:12px 16px;background:#FAF7F2;border-radius:12px;font-size:13px;display:flex;align-items:center;gap:8px}
+.realtime .fire{color:#FF6B00;font-weight:700}
+.cat-sec{padding:8px 0}
+.cat-t{font-size:16px;font-weight:700;padding:16px 16px 12px}
+.cat-scroll{display:flex;gap:10px;padding:0 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}.cat-scroll::-webkit-scrollbar{display:none}
+.cat-card{min-width:110px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;padding:16px 12px;text-align:center;flex-shrink:0}
+.cat-card .ic{font-size:32px;margin-bottom:8px}.cat-card .nm{font-size:13px;font-weight:700;margin-bottom:2px}.cat-card .ds{font-size:11px;color:#888}
+.coupon-banner{margin:20px 16px;padding:18px;background:#CC785C;border-radius:14px;text-align:center;color:#fff}
+.coupon-banner .cb-t{font-size:16px;font-weight:700;margin-bottom:4px}.coupon-banner .cb-s{font-size:12px;opacity:.85}
+/* 이열치열 */
+.spicy-card{margin:0 16px 10px;padding:14px 16px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;display:flex;align-items:center;gap:12px}
+.spicy-card .s-ic{font-size:24px;flex-shrink:0}.spicy-card .s-nm{flex:1;font-size:15px;font-weight:700}.spicy-card .s-lv{font-size:14px}
+/* 태그 */
+.tag-sec{padding:20px 16px}
+.tag-sec .tag-t{font-size:16px;font-weight:700;margin-bottom:12px}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.tag{padding:8px 14px;border:1px solid #ddd;border-radius:20px;font-size:13px;color:#555;cursor:pointer}
+.tag:active{background:#FAF2EC;border-color:#CC785C;color:#CC785C}
+/* Backfill */
+.bfh{padding:28px 20px 20px}.bfh .gr{font-size:22px;font-weight:800;line-height:1.4;margin-bottom:6px}.bfh .gr b{color:#CC785C}.bfh .sub{font-size:14px;color:#888}
+.ctx{display:inline-block;margin:0 16px 16px;padding:6px 12px;background:#FAF2EC;color:#CC785C;border-radius:20px;font-size:12px;font-weight:600}
+.rnk{background:#FF6B00;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700;white-space:nowrap}
+.seg{margin-top:8px;padding:20px 16px;background:#FAF7F2}.seg-t{font-size:15px;font-weight:700;margin-bottom:14px}
+.seg-s{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}.seg-s::-webkit-scrollbar{display:none}
+.sc{min-width:120px;background:#fff;border-radius:12px;overflow:hidden;flex-shrink:0;border:1px solid #f0f0f0}
+.sc-img{width:120px;height:80px;background:#eee;display:flex;align-items:center;justify-content:center;font-size:22px}
+.sc-bd{padding:8px}.sc-bd .nm{font-size:12px;font-weight:700;margin-bottom:2px}.sc-bd .pr{font-size:11px;color:#888}
+.ph{padding:60px 20px;text-align:center;color:#bbb;font-size:15px}
+.divider{height:8px;background:#F5F5F5}
+/* brand-menu 스타일 */
+.bm-filters{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}.bm-filters::-webkit-scrollbar{display:none}
+.bm-chip{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#fff;border:2px solid transparent;border-radius:12px;cursor:pointer;white-space:nowrap;font-size:13px;font-weight:600;color:#1a1a1a;flex-shrink:0}
+.bm-chip.on{border-color:#1a1a1a;background:#F8F4F0}
+.bm-chip .bm-ic{font-size:20px}
+.bm-grid{display:grid;grid-template-rows:repeat(2,auto);grid-auto-flow:column;grid-auto-columns:260px;gap:10px 12px;padding:0 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}.bm-grid::-webkit-scrollbar{display:none}
+.bm-menu{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;min-width:0}
+.bm-menu-img{width:56px;height:56px;border-radius:10px;background:#FAF9F7;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px}
+.bm-menu-bd{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.bm-menu-brand{font-size:11px;color:#9ca3af}
+.bm-menu-nm{font-size:13px;font-weight:600;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bm-menu-prices{display:flex;align-items:center;gap:4px}
+.bm-menu-rate{font-size:13px;font-weight:700;color:#E53935}
+.bm-menu-price{font-size:13px;font-weight:700;color:#1a1a1a}
+.bm-menu-orig{font-size:11px;color:#c4c4c4;text-decoration:line-through}
+.bm-hint{font-size:12px;color:#9ca3af;padding:8px 16px 8px;margin:0}
+/* 메모장 */
+.memo-toggle{position:fixed;top:12px;right:12px;z-index:100;width:40px;height:40px;background:#CC785C;color:#fff;border:none;border-radius:50%;font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.memo-panel{position:fixed;top:0;right:-380px;width:360px;height:100vh;background:#fff;box-shadow:-4px 0 20px rgba(0,0,0,.1);z-index:99;transition:right .3s;display:flex;flex-direction:column}
+.memo-panel.open{right:0}
+.memo-hdr{padding:14px 16px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between}
+.memo-hdr h3{font-size:15px;font-weight:700}
+.memo-close{background:none;border:none;font-size:20px;cursor:pointer;color:#888}
+.memo-body{flex:1;display:flex;flex-direction:column;padding:12px}
+.memo-input{display:flex;gap:8px;margin-bottom:12px}
+.memo-input input{flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:13px;font-family:inherit}
+.memo-input button{padding:10px 16px;background:#CC785C;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.memo-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.memo-item{padding:10px 12px;background:#FAF7F2;border-radius:10px;font-size:13px;line-height:1.5;position:relative;display:flex;gap:8px;align-items:flex-start}
+.memo-item .m-time{font-size:10px;color:#aaa;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.memo-item .m-text{flex:1;word-break:break-word}
+.memo-item .m-del{background:none;border:none;font-size:12px;color:#ccc;cursor:pointer;flex-shrink:0;padding:0}
+.memo-item .m-del:hover{color:#E53935}
+.memo-actions{padding:8px 0 0;border-top:1px solid #eee;display:flex;gap:8px;margin-top:8px}
+.memo-actions button{flex:1;padding:10px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer}
+.memo-copy{background:#f0f0f0;border:none;color:#555}
+.memo-clear{background:none;border:1px solid #ddd;color:#888}
+/* 핀 메모 */
+.pin-mode .frame{cursor:crosshair}
+.pin-btn{position:fixed;top:12px;right:58px;z-index:100;width:40px;height:40px;background:#FF6B00;color:#fff;border:none;border-radius:50%;font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.pin-btn.active{background:#E53935;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(229,57,53,.4)}50%{box-shadow:0 0 0 8px rgba(229,57,53,0)}}
+.pin{position:absolute;z-index:30;cursor:pointer;transition:transform .1s}
+.pin:hover{transform:scale(1.2)}
+.pin-dot{width:24px;height:24px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.2);border:2px solid #fff}
+.pin-tooltip{position:absolute;top:28px;left:-4px;background:#1a1a1a;color:#fff;padding:8px 10px;border-radius:8px;font-size:12px;line-height:1.4;white-space:nowrap;max-width:200px;white-space:normal;display:none;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.pin-tooltip::before{content:'';position:absolute;top:-5px;left:8px;width:10px;height:10px;background:#1a1a1a;transform:rotate(45deg)}
+.pin:hover .pin-tooltip{display:block}
+.pin-input-wrap{position:absolute;z-index:31;background:#fff;border-radius:12px;padding:12px;box-shadow:0 4px 20px rgba(0,0,0,.15);width:220px;display:none}
+.pin-input-wrap.show{display:block}
+.pin-input-wrap input{width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;font-family:inherit;margin-bottom:8px}
+.pin-input-wrap .pin-actions{display:flex;gap:6px}
+.pin-input-wrap button{flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+.pin-save{background:#FF6B00;color:#fff;border:none}
+.pin-cancel{background:#fff;border:1px solid #ddd;color:#888}
+</style>
 
-      --color-bg-primary: #fff;
-      --color-bg-light: #FAF7F2;
-      --color-bg-lighter: #FAF2EC;
-      --color-bg-border: #f0ebe4;
-      --color-bg-image: #FAF2EC;
-      --color-bg-dark: #2C3E50;
-      --color-border: #eee;
-
-      /* Accent Colors */
-      --color-accent: #CC785C;
-      --color-accent-alt: #7C3AED;
-      --color-accent-warm: #CC785C;
-      --color-accent-warm-alt: #FF8A3D;
-
-      /* Typography */
-      --font-family: -apple-system, 'Apple SD Gothic Neo', sans-serif;
-      --font-size-xs: 11px;
-      --font-size-sm: 12px;
-      --font-size-base: 13px;
-      --font-size-md: 15px;
-      --font-size-lg: 16px;
-      --font-size-xl: 17px;
-      --font-size-2xl: 18px;
-      --font-size-3xl: 48px;
-
-      --font-weight-normal: 400;
-      --font-weight-semibold: 600;
-      --font-weight-bold: 700;
-      --font-weight-heavy: 800;
-      --font-weight-black: 900;
-
-      /* Spacing (8px base) */
-      --spacing-xs: 4px;
-      --spacing-sm: 6px;
-      --spacing-md: 8px;
-      --spacing-lg: 12px;
-      --spacing-xl: 16px;
-      --spacing-2xl: 20px;
-      --spacing-3xl: 24px;
-
-      /* Border Radius */
-      --radius-sm: 8px;
-      --radius-md: 10px;
-      --radius-lg: 12px;
-      --radius-xl: 14px;
-      --radius-pill: 20px;
-      --radius-full: 50%;
-
-      /* Layout */
-      --z-header: 20;
-      --transition-fast: 0.2s;
-    }
-
-    /* ============================================================================
-       RESET & BASE STYLES
-       ============================================================================ */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      font-family: var(--font-family);
-      background: #FAF9F7;
-      color: var(--color-text-primary);
-      min-height: 100vh;
-    }
-
-    /* ============================================================================
-       LAYOUT COMPONENTS
-       ============================================================================ */
-    .frame {
-      max-width: 375px;
-      margin: 0 auto;
-      background: var(--color-bg-primary);
-      min-height: 100vh;
-    }
-
-    header.main-header {
-      padding: var(--spacing-lg) var(--spacing-xl);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--color-border);
-      position: sticky;
-      top: 0;
-      background: var(--color-bg-primary);
-      z-index: var(--z-header);
-    }
-
-    header.main-header h1 {
-      font-size: var(--font-size-xl);
-      font-weight: var(--font-weight-bold);
-      flex: 1;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: var(--spacing-lg);
-      font-size: var(--font-size-lg);
-    }
-
-    /* ============================================================================
-       CARD SYSTEM
-       ============================================================================ */
-    .card {
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-    }
-
-    .card--hero {
-      margin: var(--spacing-xl);
-      padding: var(--spacing-2xl);
-      color: var(--color-text-light);
-    }
-
-    .card--hero.card--warm {
-      background: linear-gradient(135deg, #CC785C, #B5614A);
-    }
-
-    .card--hero.card--light {
-      background: linear-gradient(135deg, #FAF2EC, #F5E6D8);
-      border: 2px solid #e8c9b6;
-      color: var(--color-text-primary);
-    }
-
-    .card--light {
-      background: var(--color-bg-primary);
-      border: 1px solid var(--color-bg-border);
-      padding: var(--spacing-xl);
-    }
-
-    .card--dark {
-      background: var(--color-bg-dark);
-      color: var(--color-text-light);
-      padding: var(--spacing-2xl);
-      margin: 0 var(--spacing-xl) var(--spacing-lg);
-    }
-
-    .card--compact {
-      background: var(--color-bg-lighter);
-      padding: var(--spacing-lg);
-    }
-
-    /* ============================================================================
+</style>
+<style>
+/* WEATHER HERO */
+/* ============================================================================
        WEATHER HERO (통합 카드)
        ============================================================================ */
     .weather-hero {
@@ -303,658 +519,100 @@
       color: #999;
       line-height: 1.5;
     }
-
-    /* ============================================================================
-       SECTION LAYOUT
-       ============================================================================ */
-    section {
-      background: var(--color-bg-primary);
-    }
-
-    section.promotions {
-      padding: var(--spacing-2xl) var(--spacing-xl) 0;
-    }
-
-    section.menu-showcase {
-      padding: var(--spacing-2xl) var(--spacing-xl) 0;
-      margin-top: var(--spacing-md);
-    }
-
-    section.recommendations {
-      padding: var(--spacing-2xl) var(--spacing-xl);
-      margin-top: var(--spacing-md);
-    }
-
-    section.discount-shops {
-      padding: var(--spacing-2xl) var(--spacing-xl);
-      margin-top: var(--spacing-md);
-    }
-
-    .section-header {
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .section-title {
-      font-size: var(--font-size-2xl);
-      font-weight: var(--font-weight-heavy);
-      margin-bottom: var(--spacing-xs);
-      color: var(--color-text-primary);
-    }
-
-    .section-subtitle {
-      font-size: var(--font-size-base);
-      color: var(--color-text-secondary);
-      font-weight: var(--font-weight-normal);
-    }
-
-    /* ============================================================================
-       COUPON CARD
-       ============================================================================ */
-    .coupon-card {
-      background: var(--color-bg-primary);
-      padding: var(--spacing-xl);
-      border-radius: var(--radius-xl);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--spacing-2xl);
-      border: 1px solid var(--color-bg-border);
-    }
-
-    .coupon-content {
-      flex: 1;
-    }
-
-    .coupon-label {
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
-      margin-bottom: var(--spacing-xs);
-    }
-
-    .coupon-amount {
-      font-size: var(--font-size-lg);
-      font-weight: var(--font-weight-heavy);
-      color: var(--color-text-primary);
-    }
-
-    .coupon-amount strong {
-      color: var(--color-accent-alt);
-    }
-
-    .btn-download {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius-full);
-      background: var(--color-accent);
-      color: var(--color-text-light);
-      border: none;
-      font-size: var(--font-size-lg);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-weight: var(--font-weight-bold);
-      transition: opacity var(--transition-fast);
-    }
-
-    .btn-download:hover {
-      opacity: 0.8;
-    }
-
-    /* ============================================================================
-       NAVIGATION COMPONENTS
-       ============================================================================ */
-    nav.tab-nav {
-      display: flex;
-      gap: var(--spacing-md);
-      margin-bottom: var(--spacing-2xl);
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: var(--spacing-md);
-      scroll-behavior: smooth;
-    }
-
-    nav.tab-nav::-webkit-scrollbar {
-      display: none;
-    }
-
-    .tab-btn {
-      padding: 10px var(--spacing-2xl);
-      border: 1.5px solid #ddd;
-      border-radius: var(--radius-pill);
-      background: var(--color-bg-primary);
-      color: #888;
-      font-size: var(--font-size-base);
-      font-weight: var(--font-weight-bold);
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
-      transition: all var(--transition-fast);
-    }
-
-    .tab-btn.active {
-      background: #CC785C;
-      border-color: #CC785C;
-      color: #fff;
-    }
-
-    .tab-btn:hover {
-      opacity: 0.8;
-    }
-
-    /* ============================================================================
-       CAROUSEL COMPONENT
-       ============================================================================ */
-    .carousel {
-      display: flex;
-      gap: var(--spacing-lg);
-      margin-bottom: var(--spacing-2xl);
-      overflow-x: auto;
-      padding-bottom: var(--spacing-md);
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-    }
-
-    .carousel::-webkit-scrollbar {
-      display: none;
-    }
-
-    .carousel-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--spacing-xs);
-      flex-shrink: 0;
-    }
-
-    .carousel-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: var(--radius-full);
-      background: var(--color-bg-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: all var(--transition-fast);
-    }
-
-    .carousel-icon.active {
-      border-color: #CC785C;
-      background: #FAF2EC;
-    }
-
-    .carousel-icon:hover {
-      opacity: 0.8;
-    }
-
-    .carousel-label {
-      font-size: var(--font-size-xs);
-      color: var(--color-text-secondary);
-      text-align: center;
-      font-weight: var(--font-weight-normal);
-    }
-
-    /* ============================================================================
-       PRODUCT CARD
-       ============================================================================ */
-    .product-card {
-      background: var(--color-bg-primary);
-      border: 1px solid var(--color-bg-border);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      margin-bottom: var(--spacing-lg);
-    }
-
-    .product-image {
-      background: var(--color-bg-image);
-      height: 160px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 56px;
-      position: relative;
-    }
-
-    .badge-discount {
-      position: absolute;
-      top: var(--spacing-lg);
-      right: var(--spacing-lg);
-      background: var(--color-accent-alt);
-      color: var(--color-text-light);
-      padding: var(--spacing-sm) var(--spacing-lg);
-      border-radius: var(--radius-sm);
-      font-size: var(--font-size-base);
-      font-weight: var(--font-weight-heavy);
-    }
-
-    .product-content {
-      padding: var(--spacing-xl);
-    }
-
-    .product-brand {
-      font-size: var(--font-size-sm);
-      color: var(--color-text-tertiary);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .product-name {
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-heavy);
-      margin-bottom: var(--spacing-md);
-      color: var(--color-text-primary);
-    }
-
-    .product-price {
-      font-size: 14px;
-      color: var(--color-accent-alt);
-      font-weight: var(--font-weight-heavy);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .product-meta {
-      font-size: var(--font-size-sm);
-      color: var(--color-text-tertiary);
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .product-action {
-      padding: 10px var(--spacing-xl);
-      background: var(--color-accent);
-      color: var(--color-text-light);
-      border: none;
-      border-radius: var(--radius-md);
-      font-size: var(--font-size-base);
-      font-weight: var(--font-weight-bold);
-      cursor: pointer;
-      width: 100%;
-      transition: opacity var(--transition-fast);
-    }
-
-    .product-action:hover {
-      opacity: 0.8;
-    }
-
-    /* ============================================================================
-       STORE INFO CARD
-       ============================================================================ */
-    .store-info {
-      background: var(--color-bg-light);
-      padding: var(--spacing-lg);
-      border-radius: var(--radius-lg);
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .store-availability {
-      font-size: var(--font-size-base);
-      color: #555;
-      margin-bottom: var(--spacing-lg);
-    }
-
-    .store-details {
-      background: var(--color-bg-light);
-      padding: var(--spacing-lg);
-      border-radius: var(--radius-lg);
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .store-name {
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .store-rating {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-      margin-bottom: var(--spacing-sm);
-      font-size: var(--font-size-base);
-    }
-
-    .store-rating-value {
-      font-weight: var(--font-weight-bold);
-    }
-
-    .store-rating-count {
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
-    }
-
-    .store-delivery {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-      font-size: var(--font-size-sm);
-    }
-
-    .store-delivery-time {
-      color: var(--color-text-primary);
-    }
-
-    .store-delivery-free {
-      color: var(--color-accent);
-      font-weight: var(--font-weight-bold);
-    }
-
-    /* ============================================================================
-       EVENT BANNER
-       ============================================================================ */
-    .event-banner {
-      background: var(--color-accent-warm-alt);
-      color: var(--color-text-light);
-      padding: var(--spacing-3xl) var(--spacing-xl);
-      border-radius: var(--radius-lg);
-      text-align: center;
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .event-title {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-md);
-      justify-content: center;
-      margin-bottom: var(--spacing-md);
-      font-weight: var(--font-weight-bold);
-    }
-
-    .event-countdown {
-      font-size: var(--font-size-2xl);
-      font-weight: var(--font-weight-heavy);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .event-caption {
-      font-size: var(--font-size-base);
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .event-promo {
-      background: rgba(255,255,255,0.3);
-      padding: var(--spacing-2xl) var(--spacing-xl);
-      border-radius: var(--radius-md);
-      font-size: var(--font-size-base);
-      font-weight: var(--font-weight-bold);
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .event-notification-text {
-      font-size: var(--font-size-sm);
-      color: rgba(255,255,255,0.9);
-      margin-bottom: var(--spacing-lg);
-    }
-
-    .event-notification-btn {
-      width: 100%;
-      padding: var(--spacing-lg);
-      background: var(--color-bg-primary);
-      color: var(--color-accent-warm-alt);
-      border: none;
-      border-radius: var(--radius-md);
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-bold);
-      cursor: pointer;
-      transition: opacity var(--transition-fast);
-    }
-
-    .event-notification-btn:hover {
-      opacity: 0.8;
-    }
-
-    /* ============================================================================
-       RECOMMENDATION CARD (DARK)
-       ============================================================================ */
-    .recommendation-card {
-      background: var(--color-bg-dark);
-      border-radius: var(--radius-xl);
-      padding: var(--spacing-2xl);
-      color: var(--color-text-light);
-      margin-bottom: var(--spacing-lg);
-    }
-
-    .badge-pick {
-      display: inline-block;
-      background: var(--color-accent);
-      color: var(--color-text-light);
-      padding: var(--spacing-sm) var(--spacing-lg);
-      border-radius: var(--radius-xl);
-      font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-bold);
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .rec-title {
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-heavy);
-      margin-bottom: var(--spacing-xs);
-    }
-
-    .rec-desc {
-      font-size: var(--font-size-base);
-      color: rgba(255,255,255,0.7);
-      margin-bottom: var(--spacing-2xl);
-      line-height: 1.5;
-    }
-
-    .rec-benefit {
-      background: rgba(255,255,255,0.1);
-      padding: var(--spacing-lg);
-      border-radius: var(--radius-md);
-      font-size: var(--font-size-sm);
-      color: var(--color-accent);
-      margin-bottom: var(--spacing-2xl);
-      line-height: 1.5;
-    }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--spacing-lg);
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .dark-product {
-      background: rgba(255,255,255,0.05);
-      border-radius: var(--radius-lg);
-      padding: var(--spacing-lg);
-      text-align: center;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .dark-product-image {
-      font-size: 48px;
-      margin-bottom: var(--spacing-md);
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .dark-product-badge {
-      background: var(--color-accent-warm-alt);
-      color: var(--color-text-light);
-      padding: var(--spacing-xs) var(--spacing-sm);
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: var(--font-weight-bold);
-      margin-bottom: var(--spacing-md);
-      display: inline-block;
-    }
-
-    .dark-product-name {
-      font-size: var(--font-size-base);
-      font-weight: var(--font-weight-bold);
-      margin-bottom: var(--spacing-xs);
-    }
-
-    .dark-product-meta {
-      font-size: var(--font-size-xs);
-      color: rgba(255,255,255,0.6);
-      margin-bottom: var(--spacing-md);
-    }
-
-    .dark-product-tag {
-      font-size: var(--font-size-xs);
-      color: var(--color-accent);
-      margin-bottom: var(--spacing-md);
-    }
-
-    .dark-product-price {
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-heavy);
-    }
-
-    .rec-cta {
-      width: 100%;
-      padding: var(--spacing-2xl);
-      background: var(--color-accent);
-      color: var(--color-text-light);
-      border: none;
-      border-radius: var(--radius-md);
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-bold);
-      cursor: pointer;
-      transition: opacity var(--transition-fast);
-    }
-
-    .rec-cta:hover {
-      opacity: 0.8;
-    }
-
-    /* ============================================================================
-       SHOP TABS & GRID
-       ============================================================================ */
-    nav.shop-tabs {
-      display: flex;
-      gap: var(--spacing-md);
-      margin-bottom: var(--spacing-2xl);
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: var(--spacing-md);
-      scroll-behavior: smooth;
-    }
-
-    nav.shop-tabs::-webkit-scrollbar {
-      display: none;
-    }
-
-    .shop-tab {
-      padding: var(--spacing-sm) var(--spacing-xl);
-      background: var(--color-bg-primary);
-      border: 1.5px solid #ddd;
-      border-radius: var(--radius-pill);
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-bold);
-      color: #888;
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
-      transition: all var(--transition-fast);
-    }
-
-    .shop-tab.active {
-      background: #CC785C;
-      border-color: #CC785C;
-      color: #fff;
-    }
-
-    .shop-tab:hover {
-      opacity: 0.8;
-    }
-
-    .shop-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--spacing-lg);
-    }
-
-    .shop-card {
-      background: var(--color-bg-primary);
-      border-radius: var(--radius-xl);
-      border: 1px solid var(--color-bg-border);
-      overflow: hidden;
-      text-align: center;
-      transition: transform var(--transition-fast);
-    }
-
-    .shop-card:hover {
-      transform: translateY(-2px);
-    }
-
-    .shop-image {
-      background: var(--color-bg-image);
-      height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 36px;
-    }
-
-    .shop-discount {
-      background: var(--color-accent-alt);
-      color: var(--color-text-light);
-      padding: var(--spacing-sm) var(--spacing-lg);
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-bold);
-      margin: 10px var(--spacing-lg) 0;
-      border-radius: var(--radius-md);
-      display: inline-block;
-    }
-
-    .shop-name {
-      padding: 10px var(--spacing-lg) var(--spacing-sm);
-      font-size: var(--font-size-base);
-      font-weight: var(--font-weight-bold);
-      color: var(--color-text-primary);
-    }
-
-    .shop-info {
-      padding: 0 var(--spacing-lg) var(--spacing-lg);
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
-    }
-
-    /* ============================================================================
-       UTILITY & SPACING
-       ============================================================================ */
-    .page-footer {
-      height: 40px;
-    }
-
-    .more-button {
-      width: 100%;
-      padding: var(--spacing-lg);
-      border: 1px solid #ddd;
-      border-radius: var(--radius-lg);
-      background: var(--color-bg-primary);
-      color: #555;
-      font-size: var(--font-size-base);
-      font-weight: var(--font-weight-semibold);
-      cursor: pointer;
-      margin-top: var(--spacing-lg);
-      margin-bottom: var(--spacing-2xl);
-      transition: opacity var(--transition-fast);
-    }
-
-    .more-button:hover {
-      opacity: 0.8;
-    }
-  </style>
+</style>
+<style>.tt::-webkit-scrollbar{display:none} [style*="overflow-x:auto"]::-webkit-scrollbar{display:none} [style*="overflow-x:auto"]{scrollbar-width:none;-ms-overflow-style:none}</style>
 </head>
 <body>
-  <div class="frame">
-    <header class="main-header">
-      <h1>🌐 배민 먹을복 페스타</h1>
-      <div class="header-actions">
-        <span>🛒</span>
-        <span>👤</span>
-      </div>
-    </header>
+<div class="frame">
+<div class="hdr" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">🌐</span><h1>배민 먹을복 페스타</h1></div><div style="display:flex;align-items:center;gap:12px"><span style="font-size:20px;cursor:pointer">🛒</span><span style="font-size:20px;cursor:pointer">👤</span></div></div>
+<!-- ===== MASS 혜택: 복주머니 쿠폰 배너 ===== -->
+<style>
+@keyframes bk-burst {
+  0%   { transform: translate(0,0) scale(1.2) rotate(0deg); opacity: 1; }
+  60%  { opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--tr)); opacity: 0; }
+}
+@keyframes bk-burst-loop {
+  0%   { transform: translate(0,0) scale(1.2) rotate(0deg); opacity: 1; }
+  60%  { opacity: 1; }
+  85%  { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--tr)); opacity: 0; }
+  100% { transform: translate(0,0) scale(0) rotate(0deg); opacity: 0; }
+}
+@keyframes bk-float {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50%       { transform: translateY(-5px) rotate(3deg); }
+}
+.bk-particle {
+  position: absolute;
+  font-size: 12px;
+  pointer-events: none;
+  left: 30px; top: calc(50% - 6px);
+  transform-origin: center;
+  animation: bk-burst-loop 2.4s ease-out infinite;
+  z-index: 10;
+}
+.bk-dot {
+  position: absolute;
+  pointer-events: none;
+  left: 30px; top: 50%;
+  border-radius: 50%;
+  transform-origin: center;
+  animation: bk-burst-loop 2.4s ease-out infinite;
+  z-index: 10;
+}
+.bk-bag-wrap {
+  animation: bk-float 2.4s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+</style>
+<div id="bokjumuni-banner" style="width:100%;background:linear-gradient(135deg,#FFF5EC 0%,#FFF0E2 100%);position:relative;border-bottom:1px solid rgba(204,120,92,0.15);">
+  <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FF8A3D,#FF6B00,#CC785C);z-index:1;"></div>
 
-    <section class="hero">
+  <!-- 컨페티 파티클: 복주머니에서 사방으로 팡! -->
+  <span class="bk-particle" style="--tx:-44px;--ty:-30px;--tr:250deg;animation-delay:0s;">🌟</span>
+  <span class="bk-particle" style="--tx:72px;--ty:-36px;--tr:180deg;animation-delay:0.18s;">✨</span>
+  <span class="bk-particle" style="--tx:96px;--ty:-10px;--tr:320deg;animation-delay:0.06s;font-size:14px;">🎊</span>
+  <span class="bk-particle" style="--tx:80px;--ty:24px;--tr:200deg;animation-delay:0.30s;font-size:10px;color:#FF6B00;font-weight:900;">복</span>
+  <span class="bk-particle" style="--tx:-36px;--ty:26px;--tr:140deg;animation-delay:0.12s;font-size:10px;color:#00C2B2;font-weight:900;">복</span>
+  <span class="bk-particle" style="--tx:56px;--ty:34px;--tr:270deg;animation-delay:0.24s;font-size:13px;">⭐</span>
+  <span class="bk-particle" style="--tx:-50px;--ty:8px; --tr:100deg;animation-delay:0.09s;font-size:10px;">✦</span>
+  <span class="bk-particle" style="--tx:108px;--ty:4px; --tr:350deg;animation-delay:0.36s;font-size:11px;">🪙</span>
+  <div class="bk-dot" style="--tx:62px;--ty:-24px;--tr:210deg;animation-delay:0.04s;background:#FF6B00;width:7px;height:7px;"></div>
+  <div class="bk-dot" style="--tx:-32px;--ty:-20px;--tr:290deg;animation-delay:0.22s;background:#00C2B2;width:6px;height:6px;"></div>
+  <div class="bk-dot" style="--tx:84px;--ty:-6px; --tr:170deg;animation-delay:0.15s;background:#FFD700;width:8px;height:8px;"></div>
+  <div class="bk-dot" style="--tx:-24px;--ty:30px;--tr:130deg;animation-delay:0.28s;background:#FF8A3D;width:5px;height:5px;"></div>
+  <div class="bk-dot" style="--tx:50px;--ty:38px; --tr:240deg;animation-delay:0.42s;background:#00C2B2;width:6px;height:6px;"></div>
+  <div class="bk-dot" style="--tx:-14px;--ty:-34px;--tr:310deg;animation-delay:0.33s;background:#CC785C;width:5px;height:5px;"></div>
+
+  <div style="position:relative;display:flex;align-items:center;padding:11px 14px 11px 12px;gap:10px;">
+    <!-- 복주머니: 둥실 떠있는 float 애니메이션 -->
+    <div class="bk-bag-wrap" style="flex-shrink:0;width:48px;height:48px;">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="mintBag" cx="38%" cy="32%"><stop offset="0%" stop-color="#4EDED4"/><stop offset="50%" stop-color="#00C2B2"/><stop offset="100%" stop-color="#009E90"/></radialGradient>
+          <radialGradient id="mintNeck" cx="50%" cy="40%"><stop offset="0%" stop-color="#26D4CA"/><stop offset="100%" stop-color="#00A89A"/></radialGradient>
+        </defs>
+        <ellipse cx="24" cy="31" rx="16" ry="14" fill="url(#mintBag)"/>
+        <ellipse cx="18" cy="25" rx="5" ry="3.5" fill="rgba(255,255,255,0.28)" transform="rotate(-15 18 25)"/>
+        <rect x="18" y="13" width="12" height="7" rx="3" fill="url(#mintNeck)"/>
+        <path d="M 13 11 C 10 7, 15 5, 18 8.5 C 19 10.5, 18 12, 18 13" fill="#00C2B2"/>
+        <path d="M 35 11 C 38 7, 33 5, 30 8.5 C 29 10.5, 30 12, 30 13" fill="#00C2B2"/>
+        <circle cx="24" cy="12" r="3.5" fill="#FF6B00"/>
+        <circle cx="24" cy="12" r="2" fill="#FF8A3D"/>
+        <path d="M 21 14.5 Q 18 18 20 21" stroke="#00A89A" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <path d="M 27 14.5 Q 30 18 28 21" stroke="#00A89A" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <text x="24" y="36" text-anchor="middle" font-size="13" font-weight="900" fill="#fff" font-family="Apple SD Gothic Neo, sans-serif" opacity="0.95">복</text>
+      </svg>
+    </div>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:15px;font-weight:800;color:#1A1A1A;line-height:1.25;letter-spacing:-0.4px;white-space:nowrap;">복주머니 열고 <span style="color:#FF6B00;">쿠폰 받아가세요!</span></div>
+      <div style="font-size:11px;font-weight:500;color:#888;margin-top:3px;white-space:nowrap;">먹을복 페스타 전용 · 최대 <span style="color:#CC785C;font-weight:700;">3,000원</span> 즉시 할인</div>
+    </div>
+    <button onclick="" style="flex-shrink:0;background:#1A1A1A;color:#fff;font-size:12px;font-weight:700;padding:9px 14px;border-radius:22px;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);white-space:nowrap;letter-spacing:-0.2px;line-height:1.4;">쿠폰받기 →</button>
+  </div>
+</div>
+
+<section class="hero">
       <div class="weather-hero">
         <!-- 날씨 정보 -->
         <div class="weather-top">
@@ -991,329 +649,380 @@
         </div>
       </div>
     </section>
-
-    <section class="promotions">
-      <div class="section-header">
-        <h2 class="section-title">여름을 응원하는 더하기 쿠폰</h2>
-        <p class="section-subtitle">민경님을 위한 여름 맞춤 혜택</p>
-      </div>
-      <article class="coupon-card">
-        <div class="coupon-content">
-          <div class="coupon-amount">마케팅 1천원 더하기 쿠폰</div>
-        </div>
-        <button class="btn-download">⬇</button>
-      </article>
-    </section>
-
-    <section class="menu-showcase">
-      <div class="section-header">
-        <h2 class="section-title">여름메뉴 둘러보기</h2>
-        <p class="section-subtitle">민경님을 위한 복을 부르는 여름메뉴</p>
-      </div>
-
-      <article class="coupon-card" id="coupon-promo">
-        <div class="coupon-content">
-          <div class="coupon-label">시원한 메뉴 할인중</div>
-          <div class="coupon-amount">최대 <strong>5,000원</strong> 쿠폰팩</div>
-        </div>
-        <button class="btn-download">⬇</button>
-      </article>
-
-      <nav class="tab-nav" id="tab-group">
-        <button class="tab-btn active" data-tab-id="0" onclick="app.selectTab(0)">🧊 빙수·아이스크림</button>
-        <button class="tab-btn" data-tab-id="1" onclick="app.selectTab(1)">🍉 수박·여름 음료</button>
-        <button class="tab-btn" data-tab-id="2" onclick="app.selectTab(2)">🔥 마라·매콤한 여름</button>
-        <button class="tab-btn" data-tab-id="3" onclick="app.selectTab(3)">🍗 치맥의 계절</button>
-        <button class="tab-btn" data-tab-id="4" onclick="app.selectTab(4)">🍕 시원한 밤 피자</button>
-        <button class="tab-btn" data-tab-id="5" onclick="app.selectTab(5)">💪 복날 보양식</button>
-        <button class="tab-btn" data-tab-id="6" onclick="app.selectTab(6)">🚀 더운날 간편한끼</button>
-      </nav>
-
-      <nav class="carousel" id="brand-icons">
-        <div class="carousel-item">
-          <div class="carousel-icon active">🍦</div>
-          <div class="carousel-label">배스킨라빈스</div>
-        </div>
-        <div class="carousel-item">
-          <div class="carousel-icon">🍧</div>
-          <div class="carousel-label">설빙</div>
-        </div>
-        <div class="carousel-item">
-          <div class="carousel-icon">🥤</div>
-          <div class="carousel-label">공차</div>
-        </div>
-        <div class="carousel-item">
-          <div class="carousel-icon">☕</div>
-          <div class="carousel-label">스타벅스</div>
-        </div>
-      </nav>
-
-      <article class="product-card" id="product-card">
-        <div class="product-image">
-          <span>🍦</span>
-          <div class="badge-discount">-52</div>
-        </div>
-        <div class="product-content">
-          <div class="product-brand">배스킨라빈스</div>
-          <h3 class="product-name">민트초콜릿칩</h3>
-          <div class="product-price">3,000원 할인</div>
-          <div class="product-meta">12,000원부터 사용 가능</div>
-          <button class="product-action">주문</button>
-        </div>
-      </article>
-
-      <div class="store-availability">가까운 가게가 있어요</div>
-
-      <article class="store-details">
-        <div class="store-name">배스킨라빈스 강남점</div>
-        <div class="store-rating">
-          <span>⭐</span>
-          <span class="store-rating-value">4.6</span>
-          <span class="store-rating-count">(1,892)</span>
-          <span class="store-rating-count">·</span>
-          <span class="store-rating-count">최소주문 12,000원</span>
-        </div>
-        <div class="store-delivery">
-          <span>🚚</span>
-          <span class="store-delivery-time">20~30분</span>
-          <span class="store-rating-count">·</span>
-          <span class="store-delivery-free">무료배달</span>
-        </div>
-      </article>
-
-      <article class="event-banner">
-        <div class="event-title">
-          <span>📍</span>
-          <span>초복까지</span>
-        </div>
-        <div class="event-countdown">D-3</div>
-        <div class="event-caption">복날 당일(7/15) 사용 가능</div>
-        <div class="event-promo">카카오페이 3,000원 할인</div>
-        <div class="event-notification-text">당일 알림을 받고싶다면?</div>
-        <button class="event-notification-btn">알림신청하기</button>
-      </article>
-    </section>
-
-    <section class="discount-shops">
-      <div class="section-header">
-        <h2 class="section-title">놓치면 아까운 할인 가게</h2>
-        <p class="section-subtitle">지금 바로 할인 중인 가게만 모아봤어요</p>
-      </div>
-
-      <nav class="shop-tabs">
-        <button class="shop-tab active" data-shop-id="0" onclick="app.selectShop(0)">시원한한끼</button>
-        <button class="shop-tab" data-shop-id="1" onclick="app.selectShop(1)">복날치킨</button>
-        <button class="shop-tab" data-shop-id="2" onclick="app.selectShop(2)">여름보양식</button>
-        <button class="shop-tab" data-shop-id="3" onclick="app.selectShop(3)">이열치열</button>
-      </nav>
-
-      <div class="shop-grid">
-        <article class="shop-card">
-          <div class="shop-image">🍜</div>
-          <div class="shop-discount">⚡ 3,000원 증시할인</div>
-          <div class="shop-name">냉면집 강남점</div>
-          <div class="shop-info">⭐ 4.8 · 배달팀무료</div>
-        </article>
-        <article class="shop-card">
-          <div class="shop-image">🍧</div>
-          <div class="shop-discount">⚡ 15% 증시할인</div>
-          <div class="shop-name">빙수전문점 역삼점</div>
-          <div class="shop-info">⭐ 4.6 · 1,100원</div>
-        </article>
-        <article class="shop-card">
-          <div class="shop-image">🍗</div>
-          <div class="shop-discount">⚡ 3,000원 증시할인</div>
-          <div class="shop-name">삼계탕마을 서초점</div>
-          <div class="shop-info">⭐ 4.5 · 배달팀무료 900원</div>
-        </article>
-        <article class="shop-card">
-          <div class="shop-image">🥤</div>
-          <div class="shop-discount">⚡ 15% 증시할인</div>
-          <div class="shop-name">콩국수명가 강남점</div>
-          <div class="shop-info">⭐ 4.4 · 배달팀무료</div>
-        </article>
-      </div>
-
-      <div style="text-align: center;">
-        <button class="more-button">더 많은 가게 보러 가기 ›</button>
-      </div>
-    </section>
-
-    <div class="page-footer"></div>
+<!-- 맛별 가게 추천 -->
+<!-- 브랜드 쿠폰 한번에 받기 -->
+<div style="margin:16px 16px 8px;padding:14px 16px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;display:flex;align-items:center;justify-content:space-between">
+  <div>
+    <div style="font-size:12px;color:#888;margin-bottom:3px">🎫🎫🎫 9개 브랜드 특가 할인중</div>
+    <div style="font-size:16px;font-weight:800">총 <span style="color:#7C3AED">88,000원</span> 쿠폰팩</div>
   </div>
+  <div style="width:40px;height:40px;background:#1a1a1a;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">⬇</div>
+</div>
+<div style="padding:12px 16px 0;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none">
+<div class="ttb" onclick="switchTaste('spicy',this)" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #CC785C;background:#CC785C;cursor:pointer;white-space:nowrap;color:#fff;position:relative">🌶️ 매콤한 맛<span style="position:absolute;top:-6px;right:-4px;font-size:9px;background:#FF6B00;color:#fff;padding:1px 4px;border-radius:6px;font-weight:700">MY</span></div>
+<div class="ttb" onclick="switchTaste('sweet',this)" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #eee;background:#fff;cursor:pointer;white-space:nowrap;color:#888">🍰 달달한맛</div>
+<div class="ttb" onclick="switchTaste('umami',this)" style="padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid #eee;background:#fff;cursor:pointer;white-space:nowrap;color:#888">😋 입맛돋구는 감칠맛</div>
+</div>
+<!-- 매운맛 -->
+<div id="tp-spicy" class="tp" style="display:block">
+<div style="padding:16px 16px 12px"><div style="font-size:16px;font-weight:700"><span style="color:#CC785C">매콤한 맛</span> 좋아하는 당신을 위한 가게</div></div>
+<div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:8px">
+<div onclick="goToBrand('엽기떡볶이')" ontouchstart="this.style.background='#FAF7F2'" ontouchend="this.style.background='#fff'" style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:rgba(204,120,92,0.08)"><div style="width:48px;height:48px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:22px">🌶️</div><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:15px;font-weight:700">엽기떡볶이</span><span style="font-size:10px;background:#FFE8E8;color:#E53935;padding:2px 6px;border-radius:4px;font-weight:700">3,000원 할인</span></div><div style="font-size:12px;color:#888;margin-top:2px">25~35분</div></div><span style="color:#CC785C;font-size:20px;font-weight:300;line-height:1">›</span></div>
+<div onclick="goToBrand('신전떡볶이')" ontouchstart="this.style.background='#FAF7F2'" ontouchend="this.style.background='#fff'" style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:rgba(204,120,92,0.08)"><div style="width:48px;height:48px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:22px">🍜</div><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:15px;font-weight:700">신전떡볶이</span><span style="font-size:10px;background:#FFE8E8;color:#E53935;padding:2px 6px;border-radius:4px;font-weight:700">4,000원 할인</span></div><div style="font-size:12px;color:#888;margin-top:2px">20~30분</div></div><span style="color:#CC785C;font-size:20px;font-weight:300;line-height:1">›</span></div>
+<div onclick="goToBrand('마라탕후루')" ontouchstart="this.style.background='#FAF7F2'" ontouchend="this.style.background='#fff'" style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:rgba(204,120,92,0.08)"><div style="width:48px;height:48px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:22px">🔥</div><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:15px;font-weight:700">마라탕후루</span><span style="font-size:10px;background:#FFE8E8;color:#E53935;padding:2px 6px;border-radius:4px;font-weight:700">2,000원 할인</span></div><div style="font-size:12px;color:#888;margin-top:2px">30~40분</div></div><span style="color:#CC785C;font-size:20px;font-weight:300;line-height:1">›</span></div>
+<div onclick="goToBrand('쫄볶이네')" ontouchstart="this.style.background='#FAF7F2'" ontouchend="this.style.background='#fff'" style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:rgba(204,120,92,0.08)"><div style="width:48px;height:48px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:22px">🍲</div><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:15px;font-weight:700">쫄볶이네</span><span style="font-size:10px;background:#FFE8E8;color:#E53935;padding:2px 6px;border-radius:4px;font-weight:700">3,000원 할인</span></div><div style="font-size:12px;color:#888;margin-top:2px">25~35분</div></div><span style="color:#CC785C;font-size:20px;font-weight:300;line-height:1">›</span></div>
+</div></div>
+<!-- 달달한맛 -->
+<div id="tp-sweet" class="tp" style="display:none">
+<div style="padding:16px 16px 12px"><div style="font-size:16px;font-weight:700"><span style="color:#CC785C">달달한맛</span> 충전이 필요할 때</div></div>
+<div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:8px">
+<div onclick="goToBrand('설빙')" ontouchstart="this.style.background='#FAF7F2'" ontouchend="this.style.background='#fff'" style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:rgba(204,120,92,0.08)"><div style="width:48px;height:48px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:22px">🍧</div><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:15px;font-weight:700">설빙</span><span style="font-size:10px;background:#FFE8E8;color:#E53935;padding:2px 6px;border-radius:4px;font-weight:700">1,000원 할인</span></div><div style="font-size:12px;color:#888;margin-top:2px">20~30분</div></div><span style="color:#CC785C;font-size:20px;font-weight:300;line-height:1">›</span></div>
+<div onclick="goToBrand('카페디저트')" ontouchstart="this.style.background='#FAF7F2'" ontouchend="this.style.background='#fff'" style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:rgba(204,120,92,0.08)"><div style="width:48px;height:48px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:22px">🧇</div><div style="flex:1"><div style="font-size:15px;font-weight:700">카페디저트</div><div style="font-size:12px;color:#888;margin-top:2px">15~25분</div></div><span style="color:#CC785C;font-size:20px;font-weight:300;line-height:1">›</span></div>
+</div></div>
+<!-- 감칠맛 -->
+<div id="tp-umami" class="tp" style="display:none">
+<div style="padding:16px 16px 12px"><div style="font-size:16px;font-weight:700"><span style="color:#CC785C">입맛돋구는 감칠맛</span> 당길 때 이런 가게 어때요?</div></div>
+<div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:8px">
+<div onclick="goToBrand('교촌치킨')" ontouchstart="this.style.background='#FAF7F2'" ontouchend="this.style.background='#fff'" style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:rgba(204,120,92,0.08)"><div style="width:48px;height:48px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:22px">🍗</div><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:15px;font-weight:700">교촌치킨</span><span style="font-size:10px;background:#FFE8E8;color:#E53935;padding:2px 6px;border-radius:4px;font-weight:700">2,000원 할인</span></div><div style="font-size:12px;color:#888;margin-top:2px">30~40분</div></div><span style="color:#CC785C;font-size:20px;font-weight:300;line-height:1">›</span></div>
+<div onclick="goToBrand('도미노피자')" ontouchstart="this.style.background='#FAF7F2'" ontouchend="this.style.background='#fff'" style="display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #f0f0f0;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:rgba(204,120,92,0.08)"><div style="width:48px;height:48px;border-radius:12px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:22px">🍕</div><div style="flex:1"><div style="font-size:15px;font-weight:700">도미노피자</div><div style="font-size:12px;color:#888;margin-top:2px">25~35분</div></div><span style="color:#CC785C;font-size:20px;font-weight:300;line-height:1">›</span></div>
+</div></div>
+<!-- 장보기쇼핑 -->
+<div id="tp-mart" class="tp" style="display:none">
+<div style="padding:16px 16px 4px"><div style="font-size:18px;font-weight:800">마트·편의점 인기상품 할인중</div><div style="font-size:13px;color:#888;margin-top:4px">쓰고 또 쓰는 쿠폰까지</div></div>
+<!-- B마트 -->
+<div style="margin:12px 16px;background:#fff;border:1px solid #f0f0f0;border-radius:16px;overflow:hidden">
+<div style="padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f0f0f0"><div style="width:40px;height:40px;border-radius:10px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:18px">🅱️</div><div><div style="font-size:15px;font-weight:700">B마트 ›</div><div style="font-size:12px;color:#888">한돈 최대 50% 할인 기획전</div></div></div>
+<div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:#FAF7F2"><div><div style="font-size:11px;color:#888">B마트</div><div style="font-size:15px;font-weight:800">최대 <span style="color:#7C3AED">8,000원</span> 할인</div><div style="font-size:11px;color:#aaa">16,000원부터 사용 가능</div></div><div style="width:36px;height:36px;background:#7C3AED;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer">⬇</div></div>
+<div style="padding:12px 16px;display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch">
+<div style="min-width:120px;flex-shrink:0"><div style="height:90px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px;position:relative">🥩<span style="position:absolute;top:4px;left:4px;background:#E53935;color:#fff;font-size:9px;padding:2px 5px;border-radius:4px;font-weight:700">행사상품</span></div><div style="font-size:11px;color:#555;margin-top:6px;line-height:1.3">냉장 뒷다리살<br>찌개용 300g</div><div style="font-size:12px;margin-top:2px"><span style="color:#E53935;font-weight:700">50%</span> <b>3,990원</b></div></div>
+<div style="min-width:120px;flex-shrink:0"><div style="height:90px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px;position:relative">🍖<span style="position:absolute;top:4px;left:4px;background:#E53935;color:#fff;font-size:9px;padding:2px 5px;border-radius:4px;font-weight:700">행사상품</span></div><div style="font-size:11px;color:#555;margin-top:6px;line-height:1.3">[배민이지] 한돈<br>다짐육 150g</div><div style="font-size:12px;margin-top:2px"><b>2,990원</b></div></div>
+<div style="min-width:120px;flex-shrink:0"><div style="height:90px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px">🥩</div><div style="font-size:11px;color:#555;margin-top:6px;line-height:1.3">목우촌 한돈<br>뒷다리살 600g</div><div style="font-size:12px;margin-top:2px"><b>5,990원</b></div></div>
+</div>
+<div style="padding:0 16px 14px"><button style="width:100%;padding:12px;background:#fff;border:1px solid #ddd;border-radius:12px;font-size:13px;font-weight:600;color:#555;cursor:pointer">B마트 기획전 ›</button></div>
+</div>
+<!-- CU -->
+<div style="margin:12px 16px;background:#fff;border:1px solid #f0f0f0;border-radius:16px;overflow:hidden">
+<div style="padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f0f0f0"><div style="width:40px;height:40px;border-radius:10px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:18px">🏪</div><div><div style="font-size:15px;font-weight:700">CU ›</div><div style="font-size:12px;color:#888">최대 33% 할인 가벼운 한 끼 기획전</div></div></div>
+<div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:#FAF7F2"><div><div style="font-size:11px;color:#888">CU</div><div style="font-size:15px;font-weight:800">최대 <span style="color:#7C3AED">7,980원</span> 할인</div><div style="font-size:11px;color:#aaa">7,980원부터 사용 가능</div></div><div style="width:36px;height:36px;background:#7C3AED;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer">⬇</div></div>
+<div style="padding:12px 16px;display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch">
+<div style="min-width:120px;flex-shrink:0"><div style="height:90px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px;position:relative">🥣<span style="position:absolute;top:4px;left:4px;background:#E53935;color:#fff;font-size:9px;padding:2px 5px;border-radius:4px;font-weight:700">행사상품</span></div><div style="font-size:11px;color:#555;margin-top:6px;line-height:1.3">켈로그 아몬드컵<br>시리얼</div><div style="font-size:12px;margin-top:2px"><span style="color:#E53935;font-weight:700">33%</span> <b>3,800원</b></div></div>
+<div style="min-width:120px;flex-shrink:0"><div style="height:90px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px;position:relative">🍊<span style="position:absolute;top:4px;left:4px;background:#E53935;color:#fff;font-size:9px;padding:2px 5px;border-radius:4px;font-weight:700">행사상품</span></div><div style="font-size:11px;color:#555;margin-top:6px;line-height:1.3">동서 오레오오즈컵<br>30g</div><div style="font-size:12px;margin-top:2px"><b>1,900원</b></div></div>
+<div style="min-width:120px;flex-shrink:0"><div style="height:90px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px">🥜</div><div style="font-size:11px;color:#555;margin-top:6px;line-height:1.3">HEYROO 시리얼<br>득템</div><div style="font-size:12px;margin-top:2px"><b>3,200원</b></div></div>
+</div>
+<div style="padding:0 16px 14px"><button style="width:100%;padding:12px;background:#fff;border:1px solid #ddd;border-radius:12px;font-size:13px;font-weight:600;color:#555;cursor:pointer">CU 기획전 ›</button></div>
+</div>
+</div>
+<!-- 픽업 -->
+<div id="tp-pickup" class="tp" style="display:none">
+<div style="padding:16px 16px 4px"><div style="font-size:18px;font-weight:800">픽업 인기 메뉴</div><div style="font-size:13px;color:#888;margin-top:4px">직접 가져가면 더 저렴하게</div></div>
+<!-- 카페 픽업 -->
+<div style="margin:12px 16px;background:#fff;border:1px solid #f0f0f0;border-radius:16px;overflow:hidden">
+<div style="padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f0f0f0"><div style="width:40px;height:40px;border-radius:10px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:18px">☕</div><div><div style="font-size:15px;font-weight:700">카페 픽업 ›</div><div style="font-size:12px;color:#888">최대 40% 할인 아이스 음료 특가</div></div></div>
+<div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:#FAF7F2"><div><div style="font-size:11px;color:#888">카페 픽업</div><div style="font-size:15px;font-weight:800">최대 <span style="color:#7C3AED">3,000원</span> 할인</div><div style="font-size:11px;color:#aaa">5,000원부터 사용 가능</div></div><div style="width:36px;height:36px;background:#7C3AED;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer">⬇</div></div>
+<div style="padding:12px 16px;display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch">
+<div style="min-width:120px;flex-shrink:0"><div style="height:90px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px">☕</div><div style="font-size:11px;color:#555;margin-top:6px;line-height:1.3">메가커피<br>아이스 아메리카노</div><div style="font-size:12px;margin-top:2px"><span style="color:#E53935;font-weight:700">40%</span> <b>1,500원</b></div></div>
+<div style="min-width:120px;flex-shrink:0"><div style="height:90px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px">🧋</div><div style="font-size:11px;color:#555;margin-top:6px;line-height:1.3">컴포즈커피<br>아이스라떼</div><div style="font-size:12px;margin-top:2px"><span style="color:#E53935;font-weight:700">30%</span> <b>2,100원</b></div></div>
+<div style="min-width:120px;flex-shrink:0"><div style="height:90px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px">🥤</div><div style="font-size:11px;color:#555;margin-top:6px;line-height:1.3">빽다방<br>아이스 원조커피</div><div style="font-size:12px;margin-top:2px"><b>2,000원</b></div></div>
+</div>
+<div style="padding:0 16px 14px"><button style="width:100%;padding:12px;background:#fff;border:1px solid #ddd;border-radius:12px;font-size:13px;font-weight:600;color:#555;cursor:pointer">카페 픽업 더보기 ›</button></div>
+</div>
+<!-- 치킨 픽업 -->
+<div style="margin:12px 16px;background:#fff;border:1px solid #f0f0f0;border-radius:16px;overflow:hidden">
+<div style="padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f0f0f0"><div style="width:40px;height:40px;border-radius:10px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:18px">🍗</div><div><div style="font-size:15px;font-weight:700">치킨 픽업 ›</div><div style="font-size:12px;color:#888">픽업하면 최대 5,000원 할인</div></div></div>
+<div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:#FAF7F2"><div><div style="font-size:11px;color:#888">치킨 픽업</div><div style="font-size:15px;font-weight:800">최대 <span style="color:#7C3AED">5,000원</span> 할인</div><div style="font-size:11px;color:#aaa">15,000원부터 사용 가능</div></div><div style="width:36px;height:36px;background:#7C3AED;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer">⬇</div></div>
+<div style="padding:12px 16px;display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch">
+<div style="min-width:120px;flex-shrink:0"><div style="height:90px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px">🍗</div><div style="font-size:11px;color:#555;margin-top:6px;line-height:1.3">교촌치킨<br>허니콤보</div><div style="font-size:12px;margin-top:2px"><span style="color:#E53935;font-weight:700">25%</span> <b>14,250원</b></div></div>
+<div style="min-width:120px;flex-shrink:0"><div style="height:90px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px">🍗</div><div style="font-size:11px;color:#555;margin-top:6px;line-height:1.3">BBQ<br>황금올리브</div><div style="font-size:12px;margin-top:2px"><span style="color:#E53935;font-weight:700">20%</span> <b>16,000원</b></div></div>
+<div style="min-width:120px;flex-shrink:0"><div style="height:90px;background:#FAF9F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px">🍗</div><div style="font-size:11px;color:#555;margin-top:6px;line-height:1.3">굽네치킨<br>고추바사삭</div><div style="font-size:12px;margin-top:2px"><b>19,000원</b></div></div>
+</div>
+<div style="padding:0 16px 14px"><button style="width:100%;padding:12px;background:#fff;border:1px solid #ddd;border-radius:12px;font-size:13px;font-weight:600;color:#555;cursor:pointer">치킨 픽업 더보기 ›</button></div>
+</div>
+</div>
+<!-- D-n 플로팅 버튼 (시즈널 이벤트 티징) -->
+<div id="d-float" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:343px;background:#FF8A3D;border-radius:20px;padding:14px 16px 16px;box-shadow:0 8px 32px rgba(255,138,61,0.4);z-index:50;display:flex;flex-direction:column;gap:12px;transition:bottom 0.35s ease,border-radius 0.35s ease">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="width:38px;height:38px;background:rgba(255,255,255,0.25);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">⭐</div>
+    <div style="flex:1;min-width:0">
+      <div id="d-label" style="font-size:11px;color:rgba(255,255,255,0.85);margin-bottom:2px">시즈널 이벤트</div>
+      <div id="d-title" style="font-size:15px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">D-<span id="d-num">3</span> · 카카오페이 3,000원 할인</div>
+    </div>
+    <button onclick="closeDFloat()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:13px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">✕</button>
+  </div>
+  <button id="d-float-btn" onclick="claimAndNotify()" style="width:100%;padding:14px;background:#fff;color:#FF8A3D;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;transition:opacity 0.2s">알림신청하고 쿠폰받기</button>
+</div>
+<!-- 우리 동네 할인 가게 (W1~2) -->
+<div style="padding:24px 16px 8px"><div style="font-size:20px;font-weight:800">우리 동네 할인 가게</div><div style="font-size:13px;color:#888;margin-top:4px">지금 바로 할인 중인 가게만 모아봤어요</div></div>
+<!-- 카카오페이 쿠폰 -->
+<div style="margin:4px 16px 12px;background:#fff;border-radius:16px;border:1px solid #f0f0f0;padding:16px 16px 16px 16px;display:flex;align-items:center;gap:14px;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.06)">
+  <span style="position:absolute;top:0;right:0;background:#7C3AED;color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:0 16px 0 10px;letter-spacing:0.3px">한정수량 쿠폰</span>
+  <div style="width:48px;height:48px;border-radius:14px;background:#FAF2EC;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">🏠</div>
+  <div style="flex:1;min-width:0;padding-right:4px">
+    <div style="font-size:11px;color:#aaa;margin-bottom:3px;font-weight:500">음식배달</div>
+    <div style="font-size:17px;font-weight:800;line-height:1.2"><span style="color:#7C3AED">1,000원</span> 카카오페이 할인</div>
+    <div style="font-size:11px;color:#bbb;margin-top:4px;line-height:1.6">5,000원부터 사용 가능<br>선착순 소진 시 종료</div>
+  </div>
+  <div onclick="this.innerHTML='✓';this.style.background='#ccc';this.style.cursor='default'" style="width:40px;height:40px;background:#1a1a1a;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;flex-shrink:0;transition:background .2s">⬇</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 16px">
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;background:#1a1a1a;color:#fff;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🏠 전체</div>
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🍗 치킨</div>
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">☕ 카페·디저트</div>
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🥡 중식</div>
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🍣 돈까스·회</div>
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🍕 피자</div>
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🍔 패스트푸드</div>
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🍲 찜</div>
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🌶️ 매콤한 맛</div>
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">🍰 달달한맛</div>
+<div style="padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid #eee;background:#fff;color:#888;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:4px">😋 입맛돋구는 감칠맛</div>
+</div>
+<div style="padding:8px 16px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid #f0f0f0">
+<div style="height:120px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative">🍜<div style="position:absolute;bottom:8px;left:8px;background:#7C3AED;color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700">⚡ 3,000원 즉시할인</div></div>
+<div style="padding:10px"><div style="font-size:14px;font-weight:700">영카츠 강남점</div><div style="font-size:12px;color:#888;margin-top:2px">⭐ 4.5 · <span style="color:#CC785C">배달팁무료</span> 700원</div></div>
+</div>
+<div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid #f0f0f0">
+<div style="height:120px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative">🍲<div style="position:absolute;bottom:8px;left:8px;background:#7C3AED;color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700">⚡ 15% 즉시할인</div></div>
+<div style="padding:10px"><div style="font-size:14px;font-weight:700">88노가리 역삼점</div><div style="font-size:12px;color:#888;margin-top:2px">⭐ 4.9 · 1,100원</div></div>
+</div>
+<div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid #f0f0f0">
+<div style="height:120px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative">🥩<div style="position:absolute;bottom:8px;left:8px;background:#7C3AED;color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700">⚡ 3,000원 즉시할인</div></div>
+<div style="padding:10px"><div style="font-size:14px;font-weight:700">함평육회 강남점</div><div style="font-size:12px;color:#888;margin-top:2px">⭐ 4.2 · <span style="color:#CC785C">배달팁무료</span> 1,800원</div></div>
+</div>
+<div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid #f0f0f0">
+<div style="height:120px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative">🍝<div style="position:absolute;bottom:8px;left:8px;background:#7C3AED;color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700">⚡ 15% 즉시할인</div></div>
+<div style="padding:10px"><div style="font-size:14px;font-weight:700">석촌칼국수 본점</div><div style="font-size:12px;color:#888;margin-top:2px">⭐ 4.5 · <span style="color:#CC785C">배달팁무료</span> 900원</div></div>
+</div>
+<div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid #f0f0f0">
+<div style="height:120px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative">🌶️<div style="position:absolute;bottom:8px;left:8px;background:#7C3AED;color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700">⚡ 3,000원 즉시할인</div></div>
+<div style="padding:10px"><div style="font-size:14px;font-weight:700">춘리마라탕 강남점</div><div style="font-size:12px;color:#888;margin-top:2px">⭐ 4.7 · <span style="color:#CC785C">배달팁무료</span> 900원</div></div>
+</div>
+<div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid #f0f0f0">
+<div style="height:120px;background:#FAF9F7;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative">🍔<div style="position:absolute;bottom:8px;left:8px;background:#7C3AED;color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700">⚡ 15% 즉시할인</div></div>
+<div style="padding:10px"><div style="font-size:14px;font-weight:700">다운타우너 역삼점</div><div style="font-size:12px;color:#888;margin-top:2px">⭐ 4.1 · <span style="color:#CC785C">배달팁무료</span> 1,400원</div></div>
+</div>
+</div>
+<div style="padding:12px 16px 20px"><button style="width:100%;padding:14px;background:#fff;border:1px solid #ddd;border-radius:12px;font-size:14px;font-weight:600;color:#555;cursor:pointer">더 많은 가게 보러 가기 ›</button></div>
 
-  <script>
-    const TABS = {
-      cool: { name: '시원한 메뉴', promo: '시원한 메뉴 할인중', promoAmount: '최대 <b>5,000원</b> 쿠폰팩', brands: [{icon:'🍦',name:'배스킨라빈스'},{icon:'🍧',name:'설빙'},{icon:'🥤',name:'공차'},{icon:'☕',name:'스타벅스'}], product: {icon:'🍦',discount:'-52',brand:'배스킨라빈스',name:'민트초콜릿칩',price:'3,000원 할인',meta:'12,000원부터 사용 가능'} },
-      boknal: { name: '복날', promo: '복날 특가 진행중', promoAmount: '최대 <b>8,000원</b> 쿠폰팩', brands: [{icon:'🍗',name:'삼계탕마을'},{icon:'🍲',name:'영양탕'},{icon:'🥘',name:'한우구이'},{icon:'🍜',name:'우육탕'}], product: {icon:'🍗',discount:'-40',brand:'삼계탕마을',name:'여름 삼계탕',price:'5,000원 할인',meta:'20,000원부터 사용 가능'} },
-      boyang: { name: '보양식', promo: '보양식 할인중', promoAmount: '최대 <b>6,000원</b> 쿠폰팩', brands: [{icon:'🍲',name:'영양탕'},{icon:'🥘',name:'한방스튜'},{icon:'🍗',name:'닭백숙'},{icon:'🦪',name:'전복죽'}], product: {icon:'🥘',discount:'-35',brand:'영양탕 강남',name:'고급 한방 보양탕',price:'4,000원 할인',meta:'18,000원부터 사용 가능'} },
-      spicy: { name: '이열치열', promo: '매운맛 메뉴 할인중', promoAmount: '최대 <b>4,000원</b> 쿠폰팩', brands: [{icon:'🌶️',name:'춘리마라탕'},{icon:'🍜',name:'탕화쿵푸마라탕'},{icon:'🔥',name:'동대문엽기떡볶이'},{icon:'🌶️',name:'신전떡볶이'}], product: {icon:'🌶️',discount:'-45',brand:'춘리마라탕',name:'셀프마라탕',price:'2,500원 할인',meta:'15,000원부터 사용 가능'} },
-      chicken: { name: '치맥의 계절', promo: '치맥 특가 진행중', promoAmount: '최대 <b>6,000원</b> 쿠폰팩', brands: [{icon:'🍗',name:'BHC'},{icon:'🍗',name:'교촌치킨'},{icon:'🍗',name:'처갓집양념치킨'},{icon:'🍗',name:'노랑통닭'}], product: {icon:'🍗',discount:'-40',brand:'BHC',name:'뿌링클',price:'5,000원 할인',meta:'18,000원부터 사용 가능'} },
-      drink: { name: '수박·여름 음료', promo: '여름 음료 할인중', promoAmount: '최대 <b>3,000원</b> 쿠폰팩', brands: [{icon:'🍉',name:'메가MGC커피'},{icon:'🍉',name:'빽다방'},{icon:'🍉',name:'컴포즈커피'},{icon:'🍉',name:'스타벅스'}], product: {icon:'🍉',discount:'-30',brand:'빽다방',name:'우리수박주스',price:'2,000원 할인',meta:'10,000원부터 사용 가능'} },
-      pizza: { name: '시원한 밤 피자', promo: '피자 할인중', promoAmount: '최대 <b>5,000원</b> 쿠폰팩', brands: [{icon:'🍕',name:'노모어피자'},{icon:'🍕',name:'빽보이피자'},{icon:'🍕',name:'파파존스'},{icon:'🍕',name:'피나치공'}], product: {icon:'🍕',discount:'-35',brand:'노모어피자',name:'반반피자L',price:'4,000원 할인',meta:'20,000원부터 사용 가능'} },
-      simple: { name: '더운날 간편한끼', promo: '간편식 할인중', promoAmount: '최대 <b>4,000원</b> 쿠폰팩', brands: [{icon:'🍔',name:'롯데리아'},{icon:'🍟',name:'맥도날드'},{icon:'🍕',name:'버거킹'},{icon:'🥪',name:'써브웨이'}], product: {icon:'🍔',discount:'-32',brand:'맥도날드',name:'상하이치킨스낵랩',price:'3,000원 할인',meta:'16,000원부터 사용 가능'} }
-    };
-
-    const THEMES = {
-      cold: { icon: '🍗', title: '치맥의 계절', desc: '밤이 선선함, 저녁 활동 활발' },
-      cool: { icon: '🍉', title: '수박·여름 음료', desc: '낮은 온도지만 낮시간 따뜻함, 음료 수요' },
-      warm: { icon: '🧊', title: '빙수·아이스크림 천국', desc: '충분히 더움, 시원함 필수' },
-      hot: { icon: '🔥', title: '마라·매콤한 여름', desc: '매우 더운 날씨, 땀 내기로 더위를 극복하는 자극음식' },
-      extreme: { icon: '🚀', title: '더운날 간편한끼', desc: '극한의 더위, 밖 활동 힘들어 배달·간편식 증가' }
-    };
-
-    const TEMP_TAB_ORDER = {
-      cold: ['chicken', 'drink', 'cool', 'pizza', 'spicy', 'boknal', 'simple'],     // 치맥 우선
-      cool: ['drink', 'chicken', 'cool', 'boknal', 'spicy', 'pizza', 'simple'],     // 음료 우선
-      warm: ['cool', 'drink', 'boknal', 'pizza', 'chicken', 'spicy', 'simple'],     // 빙수 우선
-      hot: ['spicy', 'chicken', 'boknal', 'simple', 'cool', 'drink', 'pizza'],      // 매콤 우선
-      extreme: ['simple', 'cool', 'drink', 'pizza', 'chicken', 'spicy', 'boknal']   // 간편식 우선
-    };
-
-    // 테마와 탭의 매핑 (추천메뉴 테마명 → 탭 키)
-    const THEME_TO_TAB_KEY = {
-      '빙수·아이스크림 천국': 'cool',
-      '수박·여름 음료': 'drink',
-      '마라·매콤한 여름': 'spicy',
-      '치맥의 계절': 'chicken',
-      '시원한 밤 피자': 'pizza',
-      '복날 보양식': 'boknal',
-      '더운날 간편한끼': 'simple'
-    };
-
-    // 탭 키 → 이모지 라벨 매핑
-    const TAB_LABELS = {
-      'cool': '🧊 빙수·아이스크림',
-      'drink': '🍉 수박·여름 음료',
-      'spicy': '🔥 마라·매콤한 여름',
-      'chicken': '🍗 치맥의 계절',
-      'pizza': '🍕 시원한 밤 피자',
-      'boknal': '💪 복날 보양식',
-      'simple': '🚀 더운날 간편한끼'
-    };
-
-    const app = {
-      currentTemp: 34,
-      currentTheme: 'hot',
-      tabOrder: ['spicy', 'chicken', 'boyang', 'simple'],
-
-      getTempTheme(temp) {
-        if (temp < 24) return 'cold';
-        if (temp < 28) return 'cool';
-        if (temp < 32) return 'warm';
-        if (temp < 36) return 'hot';
-        return 'extreme';
-      },
-
-      setTemp(temp) {
-        this.currentTemp = temp;
-        this.currentTheme = this.getTempTheme(temp);
-        this.tabOrder = TEMP_TAB_ORDER[this.currentTheme];
-        this.updateTheme(); // 탭 재정렬 포함
-        // updateTheme() 후에 탭이 재정렬되므로 selectTab(0) 호출
-        setTimeout(() => this.selectTab(0), 0);
-      },
-
-      updateTheme() {
-        const theme = THEMES[this.currentTheme];
-        document.getElementById('theme-icon').textContent = theme.icon;
-        document.getElementById('theme-title').textContent = theme.title;
-        document.getElementById('theme-desc').textContent = theme.desc;
-
-        // 탭 순서를 추천메뉴 테마에 맞게 재정렬
-        this.reorderTabButtons(theme.title);
-      },
-
-      reorderTabButtons(themeTitle) {
-        const tabGroup = document.getElementById('tab-group');
-        const buttons = Array.from(tabGroup.querySelectorAll('.tab-btn'));
-
-        // 추천메뉴의 테마에 해당하는 탭을 첫 번째로 정렬
-        const primaryTabKey = THEME_TO_TAB_KEY[themeTitle];
-        const orderedTabs = this.tabOrder.slice();
-
-        // primaryTabKey를 맨 앞으로
-        if (orderedTabs.includes(primaryTabKey)) {
-          orderedTabs.splice(orderedTabs.indexOf(primaryTabKey), 1);
-          orderedTabs.unshift(primaryTabKey);
-        }
-
-        // HTML 탭 버튼들을 재정렬된 순서로 업데이트
-        orderedTabs.slice(0, 7).forEach((tabKey, index) => {
-          if (buttons[index]) {
-            buttons[index].textContent = TAB_LABELS[tabKey];
-            buttons[index].dataset.tabKey = tabKey;
-            buttons[index].onclick = () => this.selectTabByKey(tabKey);
-            buttons[index].classList.toggle('active', index === 0);
-          }
-        });
-      },
-
-      selectTabByKey(tabKey) {
-        const tabGroup = document.getElementById('tab-group');
-        const buttons = Array.from(tabGroup.querySelectorAll('.tab-btn'));
-        const index = buttons.findIndex(btn => btn.dataset.tabKey === tabKey);
-
-        if (index !== -1) {
-          this.selectTab(index);
-        }
-      },
-
-      selectTab(pos) {
-        const buttons = Array.from(document.querySelectorAll('#tab-group .tab-btn'));
-        const selectedButton = buttons[pos];
-
-        // 재정렬된 탭의 tabKey를 기반으로 데이터 조회
-        // dataset.tabKey가 없으면 tabOrder 기반으로 폴백
-        let tabKey = selectedButton.dataset.tabKey;
-        if (!tabKey && pos < this.tabOrder.length) {
-          tabKey = this.tabOrder[pos];
-        }
-        const tab = TABS[tabKey];
-
-        buttons.forEach((btn, i) => {
-          btn.classList.toggle('active', i === pos);
-        });
-
-        document.getElementById('coupon-promo').innerHTML = `
-          <div class="coupon-content"><div class="coupon-label">${tab.promo}</div><div class="coupon-amount">${tab.promoAmount}</div></div>
-          <button class="btn-download">⬇</button>
-        `;
-
-        const brandIcons = document.getElementById('brand-icons');
-        brandIcons.innerHTML = tab.brands.map(b => `
-          <div class="carousel-item">
-            <div class="carousel-icon">${b.icon}</div><div class="carousel-label">${b.name}</div>
-          </div>
-        `).join('');
-        brandIcons.querySelector('.carousel-icon').classList.add('active');
-
-        const p = tab.product;
-        document.getElementById('product-card').innerHTML = `
-          <div class="product-image"><span>${p.icon}</span><div class="badge-discount">${p.discount}</div></div>
-          <div class="product-content">
-            <div class="product-brand">${p.brand}</div><h3 class="product-name">${p.name}</h3>
-            <div class="product-price">${p.price}</div><div class="product-meta">${p.meta}</div>
-            <button class="product-action">주문</button>
-          </div>
-        `;
-      },
-
-      selectShop(pos) {
-        document.querySelectorAll('.shop-tab').forEach((btn, i) => {
-          btn.classList.toggle('active', i === pos);
-        });
-      }
-    };
-
-    document.getElementById('current-temp-display').addEventListener('click', function() {
-      const temps = [20, 24, 28, 32, 36, 38];
-      const nextTemp = temps[(temps.indexOf(app.currentTemp) + 1) % temps.length];
-      this.textContent = nextTemp + '°C';
-      app.setTemp(nextTemp);
+<script>
+var pins=JSON.parse(localStorage.getItem('mukbok-pins')||'[]');
+var memoTab='all';
+function switchMemoTab(t){
+  memoTab=t;
+  ['all','memo','pin'].forEach(function(k){
+    var b=document.getElementById('mt-'+k);
+    b.style.background=k===t?'#CC785C':'#f0f0f0';
+    b.style.color=k===t?'#fff':'#555';
+  });
+  renderMemos();
+}
+function renderMemos(){
+  var el=document.getElementById('memo-list');
+  if(!el)return;
+  var items=[];
+  if(memoTab==='all'||memoTab==='memo'){
+    memos.forEach(function(m,i){
+      items.push({type:'memo',time:m.time,text:m.text,idx:i,sort:m.ts||0});
     });
+  }
+  if(memoTab==='all'||memoTab==='pin'){
+    pins.forEach(function(p,i){
+      items.push({type:'pin',time:p.time,text:p.text,idx:i,num:i+1,sort:p.ts||0});
+    });
+  }
+  items.sort(function(a,b){return b.sort-a.sort});
+  el.innerHTML=items.map(function(it){
+    var tag=it.type==='pin'?'<span style="background:#FF6B00;color:#fff;font-size:9px;padding:1px 5px;border-radius:4px;margin-right:4px">📌 #'+it.num+'</span>':'<span style="background:#CC785C;color:#fff;font-size:9px;padding:1px 5px;border-radius:4px;margin-right:4px">💬</span>';
+    var del=it.type==='memo'?'<button class="m-del" onclick="delMemo('+it.idx+')">✕</button>':'<button class="m-del" onclick="delPin('+it.idx+')">✕</button>';
+    return '<div class="memo-item"><span class="m-time">'+it.time+'</span><span class="m-text">'+tag+it.text+'</span>'+del+'</div>';
+  }).join('');
+  localStorage.setItem('mukbok-memos',JSON.stringify(memos));
+}
+function addMemo(){
+  var inp=document.getElementById('memo-in');
+  if(!inp.value.trim())return;
+  var now=new Date();
+  memos.push({text:inp.value.trim(),time:now.getHours()+':'+String(now.getMinutes()).padStart(2,'0'),ts:Date.now()});
+  inp.value='';renderMemos();
+}
+function delMemo(i){memos.splice(i,1);renderMemos();}
+function delPin(i){pins.splice(i,1);savePins();renderPins();renderMemos();}
+function clearAll(){
+  if(!confirm('메모와 핀을 모두 삭제할까요?'))return;
+  memos=[];pins=[];savePins();renderPins();renderMemos();
+}
+function copyAll(){
+  var lines=[];
+  memos.forEach(function(m){lines.push('[💬 '+m.time+'] '+m.text);});
+  pins.forEach(function(p,i){lines.push('[📌 #'+(i+1)+' '+p.time+'] '+p.text);});
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){alert('전체 메모가 클립보드에 복사되었습니다!')});
+}
+renderMemos();
 
-    window.addEventListener('load', () => app.setTemp(34));
-  </script>
+// 핀 메모
+var pinMode=false;
+var frame=document.querySelector('.frame');
+function togglePinMode(){
+  pinMode=!pinMode;
+  document.getElementById('pin-btn').classList.toggle('active',pinMode);
+  document.body.classList.toggle('pin-mode',pinMode);
+}
+function renderPins(){
+  frame.querySelectorAll('.pin,.pin-input-wrap').forEach(function(p){p.remove()});
+  pins.forEach(function(p,i){
+    var el=document.createElement('div');el.className='pin';
+    el.style.left=p.x+'px';el.style.top=p.y+'px';
+    el.innerHTML='<div class="pin-dot">'+(i+1)+'</div><div class="pin-tooltip"><b>#'+(i+1)+'</b> '+p.text+'<br><span style="font-size:10px;color:#aaa">'+p.time+' · 더블클릭으로 삭제</span></div>';
+    el.ondblclick=function(e){e.stopPropagation();pins.splice(i,1);savePins();renderPins();renderMemos();};
+    el.onclick=function(e){if(pinMode)e.stopPropagation();};
+    frame.appendChild(el);
+  });
+}
+function savePins(){localStorage.setItem('mukbok-pins',JSON.stringify(pins));}
+document.addEventListener('click',function(e){
+  if(!pinMode)return;
+  if(e.target.closest('.pin-input-wrap,.pin-btn,.memo-panel,.memo-toggle,.pin'))return;
+  e.preventDefault();e.stopPropagation();
+  var rect=frame.getBoundingClientRect();
+  var scrollY=window.pageYOffset||document.documentElement.scrollTop;
+  var x=e.clientX-rect.left;
+  var frameTop=rect.top+scrollY;
+  var y=e.pageY-frameTop;
+  if(x<0||x>rect.width)return;
+  frame.querySelectorAll('.pin-input-wrap').forEach(function(p){p.remove()});
+  var w=document.createElement('div');w.className='pin-input-wrap show';
+  w.style.left=Math.min(x+10,rect.width-230)+'px';w.style.top=y+'px';
+  w.innerHTML='<input placeholder="이 영역에 대한 의견...">'+'<div class="pin-actions"><button class="pin-save" onclick="saveNewPin(this)">저장</button><button class="pin-cancel" onclick="this.closest(\'.pin-input-wrap\').remove()">취소</button></div>';
+  w.onclick=function(ev){ev.stopPropagation();};
+  w.dataset.x=x;w.dataset.y=y;
+  frame.appendChild(w);
+  setTimeout(function(){w.querySelector('input').focus();},100);
+  w.querySelector('input').onkeydown=function(ev){if(ev.key==='Enter')saveNewPin(w.querySelector('.pin-save'));};
+},true);
+function saveNewPin(btn){
+  var w=btn.closest('.pin-input-wrap');var text=w.querySelector('input').value.trim();
+  if(!text){w.remove();return;}
+  var now=new Date();
+  pins.push({x:+w.dataset.x,y:+w.dataset.y,text:text,time:now.getHours()+':'+String(now.getMinutes()).padStart(2,'0'),ts:Date.now()});
+  savePins();renderPins();renderMemos();w.remove();togglePinMode();
+}
+renderPins();
+// 접힘 UX
+function foldResult(){document.getElementById('rc-full').style.display='none';document.getElementById('rc-mini').style.display='flex';}
+function unfoldResult(){document.getElementById('rc-full').style.display='block';document.getElementById('rc-mini').style.display='none';}
+// 브랜드 전환
+function switchBrand(idx,el){
+  for(var i=0;i<5;i++){var p=document.getElementById('bp-'+i);if(p)p.style.display=i===idx?'block':'none';}
+  document.querySelectorAll('.cpn-brand-ic').forEach(function(ic,i){ic.classList.toggle('active',i===idx);});
+}
+// Backfill 전환
+function showBackfill(){alert('🔀 주문 0회 Backfill\n\n주문 이력이 없는 신규 사용자를 위한 특별 제안입니다.\n(프로토타입 시연 버튼)');}
+function showNologin(){alert('🔀 미로그인 Backfill\n\n로그인 전 사용자를 위한 맞춤형 추천입니다.\n(프로토타입 시연 버튼)');}
+// 맛 탭 전환
+function switchTaste(id,el){
+  ['spicy','sweet','umami'].forEach(function(k){var p=document.getElementById('tp-'+k);if(p)p.style.display=k===id?'block':'none';});
+  el.parentNode.querySelectorAll('.ttb').forEach(function(t){t.style.background='#fff';t.style.color='#888';t.style.borderColor='#eee';});
+  el.style.background='#CC785C';el.style.color='#fff';el.style.borderColor='#CC785C';
+}
+// 테마 탭 전환
+function switchWeek(id,el){
+  document.querySelectorAll('.wp').forEach(function(p){p.classList.remove('on');});
+  document.getElementById('wp-'+id).classList.add('on');
+  document.querySelectorAll('.wk-tab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+}
+// W3~4 꿀조합 탭
+function switchCombo(id,el){
+  document.querySelectorAll('.combo-panel').forEach(function(p){p.classList.remove('on');});
+  document.getElementById('cp-'+id).classList.add('on');
+  document.querySelectorAll('.combo-tab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+}
+// W5~6 브랜드 전환
+function switchBrandW56(idx,el){
+  for(var i=0;i<5;i++){var p=document.getElementById('bp56-'+i);if(p)p.style.display=i===idx?'block':'none';}
+  el.closest('.cpn-brands').querySelectorAll('.cpn-brand-ic').forEach(function(ic,i){ic.classList.toggle('active',i===idx);});
+}
+// W5~6 카테고리 전환
+function switchBmCat(id,el){
+  ['cool','bok','health','hot'].forEach(function(k){var p=document.getElementById('bm-'+k);if(p)p.style.display=k===id?'block':'none';});
+  document.querySelectorAll('.bm-chip').forEach(function(c){c.classList.remove('on');});
+  el.classList.add('on');
+}
+
+// 브랜드 직접 랜딩
+function goToBrand(name){
+  // 실제 배민 검색 URL 연동 시 교체
+  window.location.href='https://www.baemin.com/search?q='+encodeURIComponent(name);
+}
+
+// D-n 플로팅 버튼 로직
+(function(){
+  var TARGET=new Date('2026-04-27T00:00:00'); // 실제 이벤트 날짜로 교체
+  var el=document.getElementById('d-float');
+  if(!el)return;
+
+  function getDiff(){
+    var now=new Date();
+    now.setHours(0,0,0,0);
+    var t=new Date(TARGET);t.setHours(0,0,0,0);
+    return Math.round((t-now)/(1000*60*60*24));
+  }
+  function getDisplayDiff(){ return 3; } // 프로토타입 고정 표시값
+
+  function setReceived(){
+    var btn=document.getElementById('d-float-btn');
+    btn.textContent='받기 완료 ✓';
+    btn.style.background='rgba(255,255,255,0.3)';
+    btn.style.color='#fff';
+    btn.style.cursor='default';
+    btn.onclick=null;
+    el.style.bottom='0';
+    el.style.borderRadius='16px 16px 0 0';
+    el.style.padding='12px 16px';
+  }
+
+  function init(){
+    var diff=getDiff();
+    var claimed=localStorage.getItem('dday-coupon-claimed');
+    var closed=sessionStorage.getItem('dday-float-closed');
+
+    if(diff<0){el.style.display='none';return;}
+    if(closed&&!claimed){el.style.display='none';return;}
+
+    var numEl=document.getElementById('d-num');
+    var label=document.getElementById('d-label');
+    var title=document.getElementById('d-title');
+    var btn=document.getElementById('d-float-btn');
+
+    if(diff===0){
+      label.textContent='오늘 자정까지 사용 가능';
+      title.innerHTML='D-Day · 카카오페이 3,000원 할인';
+      btn.textContent=claimed?'받기 완료 ✓':'지금 쿠폰받기';
+    } else {
+      numEl.textContent=getDisplayDiff();
+      label.textContent='시즈널 이벤트';
+      title.innerHTML='D-<span id="d-num">'+getDisplayDiff()+'</span> · 카카오페이 3,000원 할인';
+      btn.textContent=claimed?'알림신청 완료 ✓':'알림신청하고 쿠폰받기';
+    }
+
+    if(claimed)setReceived();
+  }
+
+  window.closeDFloat=function(){
+    sessionStorage.setItem('dday-float-closed','1');
+    el.style.display='none';
+  };
+
+  window.claimAndNotify=function(){
+    localStorage.setItem('dday-coupon-claimed','1');
+    setReceived();
+  };
+
+  init();
+})();
+
+</script>
+</div>
 </body>
 </html>
