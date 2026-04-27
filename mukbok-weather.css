@@ -1,0 +1,146 @@
+/* =============================================
+   먹을복 페스타 - 날씨 히어로 스타일
+   ============================================= */
+
+/* WEATHER HERO */
+/* ============================================================================
+       WEATHER HERO (통합 카드)
+       ============================================================================ */
+    .weather-hero {
+      margin: 16px 16px 0;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 6px 24px rgba(181,97,74,.22);
+    }
+
+    /* 상단: 날씨 정보 */
+    .weather-top {
+      background: linear-gradient(135deg, #CC785C 0%, #B5614A 100%);
+      padding: 18px 20px 20px;
+    }
+
+    .weather-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .weather-location {
+      font-size: 12px;
+      color: rgba(255,255,255,.75);
+      font-weight: 600;
+      letter-spacing: .3px;
+    }
+
+    .weather-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,.18);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: rgba(255,255,255,.9);
+      font-weight: 600;
+    }
+
+    .weather-main-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .weather-temp {
+      font-size: 58px;
+      font-weight: 900;
+      line-height: 1;
+      color: #fff;
+      cursor: pointer;
+      transition: opacity .2s;
+      letter-spacing: -2px;
+    }
+
+    .weather-temp:hover { opacity: .8; }
+
+    .weather-sub {
+      text-align: right;
+      padding-bottom: 4px;
+    }
+
+    .weather-feels {
+      font-size: 13px;
+      color: rgba(255,255,255,.85);
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .weather-cond {
+      font-size: 11px;
+      color: rgba(255,255,255,.6);
+      line-height: 1.5;
+    }
+
+    /* 하단: 추천 연결 */
+    .weather-rec {
+      background: #FAF2EC;
+      padding: 14px 20px 18px;
+    }
+
+    .rec-connector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .rec-connector-line {
+      flex: 1;
+      height: 1px;
+      background: #e8cfc0;
+    }
+
+    .rec-connector-label {
+      font-size: 10px;
+      color: #CC785C;
+      font-weight: 700;
+      letter-spacing: .5px;
+      white-space: nowrap;
+    }
+
+    .rec-body {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .theme-icon {
+      font-size: 38px;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .theme-content { flex: 1; }
+
+    .theme-label {
+      font-size: 10px;
+      color: #bbb;
+      font-weight: 600;
+      letter-spacing: .4px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .theme-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .theme-desc {
+      font-size: 11px;
+      color: #999;
+      line-height: 1.5;
+    }
